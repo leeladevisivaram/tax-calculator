@@ -17,7 +17,7 @@ Built by D Siva Kumar with help from the CodeBasics Team.
 
 ## Tech Stack
 
-- Node.js `>=20.19.0`
+- Node.js `20.x`
 - React `19`
 - Vite `8`
 - Plain browser JavaScript for the calculator workflow
@@ -30,6 +30,11 @@ Built by D Siva Kumar with help from the CodeBasics Team.
 
 ```text
 .
+|-- api/
+|   |-- _server.js                  # Shared Vercel handler adapter
+|   |-- health.js                   # Vercel /health function
+|   `-- v1/
+|       `-- [...path].js            # Vercel /api/v1/* catch-all function
 |-- client/
 |   `-- src/
 |       `-- main.js                  # React shell: Start, Calculator, Guide, About
@@ -69,6 +74,7 @@ Built by D Siva Kumar with help from the CodeBasics Team.
 |-- package.json
 |-- package-lock.json
 |-- playwright.config.mjs
+|-- vercel.json
 `-- vite.config.mjs
 ```
 
@@ -209,7 +215,7 @@ This is a local-first app.
 | --- | --- | --- |
 | `HOST` | `127.0.0.1` | Server bind host. |
 | `PORT` | `3000` | Server port. |
-| `CHATBOT_INTERACTION_LOG_DIR` | `data/chat-interactions` | Redirect local chatbot interaction logs. |
+| `CHATBOT_INTERACTION_LOG_DIR` | `data/chat-interactions` locally, temp storage on Vercel | Redirect local chatbot interaction logs. |
 | `IMPORT_ARTIFACT_SECRET` | development fallback | Secret used for local import artifact encryption. |
 | `CHATBOT_AI_ENABLED` | `true` | Enables local model-backed chatbot retrieval when available. |
 | `CHATBOT_AI_MODEL` | app default | Overrides the chatbot retrieval model. |
@@ -276,6 +282,16 @@ npx playwright install
 
 ## Deploying Or Pushing To GitHub
 
+### Vercel
+
+The project uses Vite to build the React bundle into `public/react`, while the main static site already lives in `public/`. `vercel.json` sets Vercel's output directory to `public`, so Vercel should not look for a `dist/` folder.
+
+The `api/` folder adapts the existing Node HTTP server to Vercel serverless functions:
+
+- `/api/v1/*` is handled by `api/v1/[...path].js`.
+- `/health` is rewritten to `api/health.js`.
+- Local audit logs and chatbot interaction logs use temporary serverless storage on Vercel and are not durable there.
+
 For a full project repository, include the source, docs, and tests.
 
 For a lean runtime repository, the app can run without `docs/` and `testing/`, but test commands and test reports will not work unless those folders are included or the scripts are adjusted.
@@ -288,6 +304,8 @@ data/
 public/
 scripts/
 src/
+api/
+vercel.json
 package.json
 package-lock.json
 vite.config.mjs
@@ -303,9 +321,11 @@ public/
 scripts/
 src/
 testing/
+api/
 package.json
 package-lock.json
 playwright.config.mjs
+vercel.json
 vite.config.mjs
 README.md
 ```

@@ -34,7 +34,7 @@ describe("Feature: Sanity checks", () => {
 
       assert.equal(packageJson.scripts.check, "node scripts/check-syntax.mjs");
       assert.equal(packageJson.scripts.build, "vite build --config vite.config.mjs");
-      assert.equal(packageJson.scripts["test:node"], "node --test testing/tests/*.test.mjs");
+      assert.equal(packageJson.scripts["test:node"], "node --test testing/tests");
       assert.match(packageJson.scripts["test:e2e"], /playwright test/);
       assert.equal(packageJson.scripts.test, "node scripts/run-tests-with-report.mjs");
       assert.equal(packageJson.dependencies.react, "19.2.6");

@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 
 const CHECK_ROOTS = [
+  "api",
   "client",
   "src",
   "public",

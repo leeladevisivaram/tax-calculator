@@ -1,14 +1,16 @@
 import { appendFile, mkdir } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const DEFAULT_INTERACTION_DIR = fileURLToPath(new URL("../data/chat-interactions/", import.meta.url));
+const LOCAL_INTERACTION_DIR = fileURLToPath(new URL("../data/chat-interactions/", import.meta.url));
+const SERVERLESS_INTERACTION_DIR = path.join(tmpdir(), "tax-calculator-chat-interactions");
 const DEFAULT_INTERACTION_FILE = "chatbot-interactions.jsonl";
 
 export async function appendChatbotInteraction({ request = {}, response = {}, now = new Date() } = {}) {
   const dir = process.env.CHATBOT_INTERACTION_LOG_DIR
     ? path.resolve(process.env.CHATBOT_INTERACTION_LOG_DIR)
-    : DEFAULT_INTERACTION_DIR;
+    : defaultInteractionDir();
   const filePath = path.join(dir, DEFAULT_INTERACTION_FILE);
   const record = buildChatbotInteractionRecord({ request, response, now });
 
@@ -20,6 +22,10 @@ export async function appendChatbotInteraction({ request = {}, response = {}, no
     path: filePath,
     record
   };
+}
+
+function defaultInteractionDir() {
+  return process.env.VERCEL ? SERVERLESS_INTERACTION_DIR : LOCAL_INTERACTION_DIR;
 }
 
 export function buildChatbotInteractionRecord({ request = {}, response = {}, now = new Date() } = {}) {
