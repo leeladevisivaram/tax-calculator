@@ -28,6 +28,8 @@ test.describe("Sprint 6 UAT: Form 16 Import UI", () => {
     await fillImport(page, "form16", "form16.csv", form16Content);
     await page.getByTestId("import-confirmed").check();
     await clickAction(page, "apply-import-button");
+    await expect(page.locator("[name='gross_salary']")).toHaveValue("900000");
+    await expect(page.locator("[name='tds']")).toHaveValue("45000");
 
     await expect(page.getByTestId("panel-income")).toBeVisible();
     await expect(page.locator("[name='gross_salary']")).toHaveValue("900000");
@@ -68,6 +70,8 @@ test.describe("Sprint 6 UAT: Import Review and Regression UI", () => {
     await fillImport(page, "form16", "form16.csv", form16Content);
     await page.getByTestId("import-confirmed").check();
     await clickAction(page, "apply-import-button");
+    await expect(page.locator("[name='gross_salary']")).toHaveValue("900000");
+    await expect(page.locator("[name='tds']")).toHaveValue("45000");
 
     await runCompute(page);
     await expect(page.getByTestId("result-output")).toContainText("₹9,600");

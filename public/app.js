@@ -710,7 +710,7 @@ async function postJson(path, payload) {
     headers: { "content-type": "application/json" },
     body: JSON.stringify(payload)
   });
-  const body = await response.json();
+  const body = await parseJsonResponse(response, path);
   if (!response.ok || body.status === "error") {
     throw new Error(body.error ?? "Request failed");
   }
@@ -719,11 +719,21 @@ async function postJson(path, payload) {
 
 async function fetchJson(path) {
   const response = await fetch(path);
-  const body = await response.json();
+  const body = await parseJsonResponse(response, path);
   if (!response.ok || body.status === "error") {
     throw new Error(body.error ?? "Request failed");
   }
   return body;
+}
+
+async function parseJsonResponse(response, path) {
+  const text = await response.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    const firstLine = text.trim().split(/\r?\n/)[0] || response.statusText || "non-JSON response";
+    throw new Error(`${path} returned ${response.status}: ${firstLine}`);
+  }
 }
 
 function buildRequest(options = {}) {

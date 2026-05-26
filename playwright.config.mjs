@@ -3,8 +3,12 @@ import { defineConfig } from "@playwright/test";
 const port = Number.parseInt(process.env.PORT ?? "4173", 10);
 const workers = Number.parseInt(process.env.PW_WORKERS ?? process.env.TEST_CONCURRENCY ?? "5", 10);
 const headless = process.env.HEADLESS !== "false";
+const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? process.env.BASE_URL;
+const localBaseUrl = `http://127.0.0.1:${port}`;
+const baseURL = configuredBaseUrl ?? localBaseUrl;
+const shouldStartLocalServer = !configuredBaseUrl;
 
-export default defineConfig({
+const config = {
   testDir: "./testing/tests/e2e",
   testMatch: "**/*.spec.mjs",
   outputDir: "./testing/output/test-results",
@@ -15,22 +19,27 @@ export default defineConfig({
     timeout: 7_500
   },
   use: {
-    baseURL: `http://127.0.0.1:${port}`,
+    baseURL,
     channel: "chrome",
     headless,
     acceptDownloads: true,
     trace: "retain-on-failure",
     screenshot: "only-on-failure"
   },
-  webServer: {
+  reporter: [["list"]]
+};
+
+if (shouldStartLocalServer) {
+  config.webServer = {
     command: `${process.execPath} src/server.mjs`,
-    url: `http://127.0.0.1:${port}/health`,
+    url: `${localBaseUrl}/health`,
     env: {
       HOST: "127.0.0.1",
       PORT: String(port)
     },
     reuseExistingServer: !process.env.CI,
     timeout: 15_000
-  },
-  reporter: [["list"]]
-});
+  };
+}
+
+export default defineConfig(config);

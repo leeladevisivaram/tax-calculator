@@ -12,6 +12,7 @@
     "test": "node scripts/run-tests-with-report.mjs",
     "test:node": "node --test testing/tests",
     "test:e2e": "npm run build && playwright test --config playwright.config.mjs",
+    "test:e2e:vercel": "node testing/run-vercel-e2e.mjs",
     "test:parallel5:headless-false": "HEADLESS=false PW_WORKERS=5 node scripts/run-tests-with-report.mjs",
     "dev": "npm run build && node src/server.mjs",
     "preview": "npm run build && node src/server.mjs",
