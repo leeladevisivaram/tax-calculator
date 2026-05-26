@@ -75,17 +75,6 @@ test.describe("Feature: Beginner-friendly vNext", () => {
     expect(computeCalls).toBeGreaterThanOrEqual(2);
   });
 
-  test("shows AI copilot prompts from the local review context", async ({ page }) => {
-    await openCalculator(page);
-    await fillSalaryScenario(page, 1200000);
-    await runCompute(page);
-
-    await page.getByTestId("chatbot-toggle-button").click();
-    await expect(page.getByTestId("copilot-context-prompt").first()).toBeVisible();
-    await page.getByTestId("copilot-context-prompt").filter({ hasText: "What am I missing?" }).click();
-    await expect(page.getByTestId("chatbot-messages")).toContainText("AI Review is highlighting");
-  });
-
   test("keeps beginner layout usable on mobile and respects reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 390, height: 820 });

@@ -10,8 +10,6 @@ import { extractPdfImport } from "./pdf-import-engine.mjs";
 import { reviewScenario } from "./ai-review-engine.mjs";
 import { classifyCodePart, getApplicationClassification } from "./app-classification.mjs";
 import { getApiContracts } from "./api-contracts.mjs";
-import { buildChatbotResponseAsync } from "./chatbot-engine.mjs";
-import { appendChatbotInteraction } from "./chatbot-interactions.mjs";
 import { readJsonObjectBody } from "./request-contracts.mjs";
 import {
   classifyBetaFeedback,
@@ -88,18 +86,7 @@ const JSON_ROUTES = [
   route("POST", "/api/v1/privacy/export", ({ body }) => buildPrivacyExport(body), { readBody: true }),
   route("POST", "/api/v1/privacy/delete", () => buildDeletionWorkflow(), { readBody: true }),
   route("POST", "/api/v1/launch/triage", ({ body }) => classifyBetaFeedback(body), { readBody: true }),
-  route("POST", "/api/v1/launch/readiness", ({ body }) => getLaunchReadiness(body), { readBody: true }),
-  route("POST", "/api/v1/chatbot/message", async ({ body }) => {
-    const chatbotResponse = await buildChatbotResponseAsync(body);
-    const interactionLog = await appendChatbotInteraction({ request: body, response: chatbotResponse });
-    return {
-      ...chatbotResponse,
-      interaction_log: {
-        status: interactionLog.status,
-        schema_version: interactionLog.record.schema_version
-      }
-    };
-  }, { readBody: true })
+  route("POST", "/api/v1/launch/readiness", ({ body }) => getLaunchReadiness(body), { readBody: true })
 ];
 
 export function buildServer() {

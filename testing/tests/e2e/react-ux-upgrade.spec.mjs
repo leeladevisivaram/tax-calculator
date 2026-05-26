@@ -70,22 +70,6 @@ test.describe("Feature: React UX upgrade", () => {
     expect(animationDuration).toMatch(/0\.01ms|0s|1e-05s/);
   });
 
-  test("wraps the chatbot as a blue copilot panel and keeps prompt chips wired to the API", async ({ page }) => {
-    await openCalculator(page);
-
-    let chatbotCalls = 0;
-    page.on("request", (request) => {
-      if (request.url().includes("/api/v1/chatbot/message")) chatbotCalls += 1;
-    });
-
-    await page.getByTestId("chatbot-toggle-button").click();
-
-    await expect(page.getByTestId("chatbot-copilot-panel")).toBeVisible();
-    await page.getByTestId("chatbot-prompt-start").click();
-    await expect(page.getByTestId("chatbot-messages")).toContainText("Start with Profile");
-    expect(chatbotCalls).toBeGreaterThanOrEqual(1);
-  });
-
   test("keeps calculator actions in a bottom bar without hiding form content", async ({ page }) => {
     await openCalculator(page);
 

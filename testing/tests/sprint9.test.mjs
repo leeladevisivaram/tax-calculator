@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
-import { buildChatbotResponse, buildChatbotResponseAsync } from "../../src/chatbot-engine.mjs";
 import { previewImport } from "../../src/import-engine.mjs";
 import { extractForm16FieldsFromText, extractPdfImport } from "../../src/pdf-import-engine.mjs";
 
@@ -10,29 +9,7 @@ const sampleForm16Pdf = new URL("../test-data/imports/sample-form16.pdf", import
 const sampleDeductions = new URL("../test-data/imports/sample-deductions.json", import.meta.url);
 const sampleCapitalGains = new URL("../test-data/imports/sample-capital-gains.csv", import.meta.url);
 
-describe("Feature: Sprint 9 chatbot learning and document-upload imports", () => {
-  describe("Task: chatbot field-fill agent", () => {
-    it("maps add-HRA phrasing to the HRA input and salary income head", () => {
-      const answer = buildChatbotResponse({ message: "add HRA 30400" });
-
-      assert.equal(answer.scope, "in_scope");
-      assert.equal(answer.requires_confirmation, false);
-      assert.ok(answer.actions.some((action) => action.type === "set_checked" && action.field === "income_head_salary"));
-      assert.ok(answer.actions.some((action) => action.type === "set_value" && action.field === "hra_received" && action.value === "30400"));
-    });
-
-    it("answers supported CSV, JSON, and PDF upload questions", async () => {
-      const answer = await buildChatbotResponseAsync({
-        message: "How do I upload an import file?"
-      }, { aiEnabled: false });
-
-      assert.equal(answer.match_id, "imports.file_upload.csv_json_pdf");
-      assert.match(answer.reply, /CSV, JSON, or PDF file picker/);
-      assert.match(answer.reply, /searchable Form 16 PDFs/);
-      assert.ok(answer.actions.some((action) => action.step === "imports"));
-    });
-  });
-
+describe("Feature: Sprint 9 document-upload imports", () => {
   describe("Task: sample document import parsing", () => {
     it("previews sample Form 16 CSV values for review", async () => {
       const content = await readFile(sampleForm16, "utf8");
@@ -65,10 +42,10 @@ describe("Feature: Sprint 9 chatbot learning and document-upload imports", () =>
       assert.ok(extracted.preview.review_items.some((item) => item.path === "tax_credits.tds" && item.proposed_value === 45000));
     });
 
-    it("can use an injected Hugging Face-style resolver for missing PDF fields without browser math", async () => {
+    it("can use an injected field resolver for missing PDF fields without browser math", async () => {
       const extraction = await extractForm16FieldsFromText("Form 16\nGross salary 900000\nCredits summary 45000", {
         fieldResolver: async ({ missingFields }) => ({
-          source: "huggingface_embedding_match",
+          source: "semantic_field_match",
           score: 0.88,
           fields: missingFields.map((field) => ({ field, value: field === "tds" ? 45000 : 0, confidence: "medium" }))
         })
@@ -76,7 +53,7 @@ describe("Feature: Sprint 9 chatbot learning and document-upload imports", () =>
 
       assert.equal(extraction.fields.gross_salary, 900000);
       assert.equal(extraction.fields.tds, 45000);
-      assert.equal(extraction.ai.source, "huggingface_embedding_match");
+      assert.equal(extraction.ai.source, "semantic_field_match");
       assert.deepEqual(extraction.missing_fields, []);
     });
 

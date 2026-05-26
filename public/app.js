@@ -33,15 +33,6 @@ const nextActionHint = document.querySelector("#next-action-hint");
 const scenarioOutput = document.querySelector("#scenario-output");
 const guideDialog = document.querySelector("#usage-guide");
 const guideCloseButton = document.querySelector("#close-application-guide-button");
-const chatbotToggleButton = document.querySelector("#chatbot-toggle-button");
-const chatbotPanel = document.querySelector("#chatbot-panel");
-const chatbotCloseButton = document.querySelector("#chatbot-close-button");
-const chatbotForm = document.querySelector("#chatbot-form");
-const chatbotInput = document.querySelector("#chatbot-input");
-const chatbotMessages = document.querySelector("#chatbot-messages");
-const chatbotActionPreview = document.querySelector("#chatbot-action-preview");
-const chatbotAiStatus = document.querySelector("#chatbot-ai-status");
-const copilotContextPrompts = document.querySelector("#copilot-context-prompts");
 const rupee = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
@@ -57,7 +48,6 @@ let lastComputeResult = null;
 let lastAiReview = null;
 let lastComparison = null;
 let lastGuideOpener = null;
-let pendingChatbotActions = [];
 let selectedPersona = "";
 let guidedModeEnabled = true;
 let stepHealthState = {};
@@ -151,7 +141,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 function bindEvents() {
   bindSkipLinks();
   bindGuideDialog();
-  bindChatbot();
   bindBeginnerMode();
   bindActionMenus();
 
@@ -360,182 +349,6 @@ function updateGuidedChecklist() {
   `;
 }
 
-function bindChatbot() {
-  chatbotToggleButton.addEventListener("click", () => {
-    const isOpen = !chatbotPanel.classList.contains("is-hidden");
-    setChatbotOpen(!isOpen);
-  });
-  chatbotCloseButton.addEventListener("click", () => setChatbotOpen(false));
-  chatbotForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    await submitChatbotMessage(chatbotInput.value);
-  });
-  document.querySelectorAll("[data-chatbot-prompt]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      await submitChatbotMessage(button.dataset.chatbotPrompt);
-    });
-  });
-  copilotContextPrompts.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-chatbot-prompt]");
-    if (!button) return;
-    await submitChatbotMessage(button.dataset.chatbotPrompt);
-  });
-}
-
-function setChatbotOpen(open) {
-  chatbotPanel.classList.toggle("is-hidden", !open);
-  chatbotPanel.classList.toggle("is-open", open);
-  chatbotToggleButton.setAttribute("aria-expanded", open ? "true" : "false");
-  if (open) chatbotInput.focus({ preventScroll: true });
-}
-
-async function submitChatbotMessage(message) {
-  const prompt = String(message ?? "").trim();
-  if (!prompt) return;
-  setChatbotOpen(true);
-  appendChatMessage("user", "You", prompt);
-  chatbotInput.value = "";
-  chatbotActionPreview.innerHTML = "";
-  pendingChatbotActions = [];
-
-  setButtonLoading(document.querySelector("#chatbot-send-button"), true);
-  try {
-    const answer = await postJson("/api/v1/chatbot/message", {
-      message: prompt,
-      form_state: collectFormState()
-    });
-    renderChatbotAnswer(answer);
-  } catch (error) {
-    appendChatMessage("assistant refusal", "Assistant", `I could not answer that right now. ${error.message}`);
-  } finally {
-    setButtonLoading(document.querySelector("#chatbot-send-button"), false);
-  }
-}
-
-function collectFormState() {
-  const state = formDataEntriesWithoutFiles(new FormData(form));
-  for (const field of form.querySelectorAll("input[type='checkbox']")) {
-    state[field.name] = field.checked;
-  }
-  state.regime = new FormData(form).get("regime");
-  state.active_step = stepOrder[activeStep] ?? "profile";
-  state.has_compute_result = Boolean(lastComputeResult);
-  state.has_comparison = Boolean(lastComparison);
-  state.has_report = Boolean(lastReport);
-  state.step_health = stepHealthState;
-  state.ai_review = lastAiReview ? {
-    readiness: lastAiReview.readiness,
-    confidence_score: lastAiReview.confidence_score,
-    findings: (lastAiReview.findings ?? []).slice(0, 5).map((item) => ({
-      severity: item.severity,
-      title: item.title,
-      message: item.message,
-      action: item.action,
-      related_field_ids: item.related_field_ids
-    }))
-  } : null;
-  return state;
-}
-
-function renderChatbotAnswer(answer) {
-  appendChatMessage(answer.scope === "out_of_scope" ? "assistant refusal" : "assistant", "Assistant", answer.reply);
-  renderChatbotAiStatus(answer);
-  const actions = answer.actions ?? [];
-  if (actions.length === 0) return;
-
-  if (answer.requires_confirmation) {
-    pendingChatbotActions = actions;
-    renderChatbotActionPreview(actions);
-    return;
-  }
-
-  applyChatbotActions(actions);
-  const applied = actions.filter((action) => ["set_value", "set_radio", "set_checked", "navigate"].includes(action.type));
-  if (applied.length > 0) {
-    appendChatMessage("assistant", "Assistant", "I applied that in the calculator.");
-  }
-}
-
-function renderChatbotAiStatus(answer) {
-  const source = answer.match_source ?? "";
-  if (source === "local_ml_retrieval") {
-    chatbotAiStatus.textContent = "AI assist matched this from app help content.";
-    return;
-  }
-  if (source.includes("fallback")) {
-    chatbotAiStatus.textContent = "AI assist is using app help fallback.";
-    return;
-  }
-  chatbotAiStatus.textContent = "AI assist is matching app help content.";
-}
-
-function renderChatbotActionPreview(actions) {
-  const items = actions.map((action) => `<li>${escapeHtml(actionSummary(action))}</li>`).join("");
-  chatbotActionPreview.innerHTML = `
-    <div class="chatbot-action-card" data-testid="chatbot-action-card">
-      <strong>Review suggested changes</strong>
-      <ul>${items}</ul>
-      <button id="chatbot-apply-actions-button" type="button" class="button primary" data-testid="chatbot-apply-actions-button">Apply suggestions</button>
-    </div>
-  `;
-  document.querySelector("#chatbot-apply-actions-button").addEventListener("click", () => {
-    applyChatbotActions(pendingChatbotActions);
-    appendChatMessage("assistant", "Assistant", "I applied the reviewed changes in the calculator.");
-    pendingChatbotActions = [];
-    chatbotActionPreview.innerHTML = "";
-  });
-}
-
-function applyChatbotActions(actions = []) {
-  const targetStep = actions.find((action) => action.step)?.step;
-  for (const action of actions) {
-    if (action.type === "navigate") {
-      jumpToStep(action.step);
-      continue;
-    }
-    if (action.type === "set_checked") {
-      const field = form.elements[action.field];
-      if (field) field.checked = Boolean(action.checked);
-      continue;
-    }
-    if (action.type === "set_radio") {
-      const field = form.querySelector(`[name="${cssEscape(action.field)}"][value="${cssEscape(action.value)}"]`);
-      if (field) field.checked = true;
-      continue;
-    }
-    if (action.type === "set_value") {
-      const field = form.elements[action.field];
-      if (field) field.value = action.value;
-    }
-  }
-  if (targetStep && stepOrder.includes(targetStep)) activeStep = stepOrder.indexOf(targetStep);
-  draftStatus.textContent = "Draft has unsaved changes";
-  updateIncomeSections();
-  updateRegimeHints();
-  updateStepHealth();
-  updateRecommendedAction();
-  updateSummary();
-  renderStep();
-}
-
-function appendChatMessage(kind, label, message) {
-  chatbotMessages.insertAdjacentHTML("beforeend", `
-    <div class="chat-message ${escapeHtml(kind)}" data-testid="chatbot-message">
-      <strong>${escapeHtml(label)}</strong>
-      <p>${escapeHtml(message)}</p>
-    </div>
-  `);
-  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-}
-
-function actionSummary(action) {
-  if (action.type === "navigate") return `Open ${action.label}`;
-  if (action.type === "set_checked") return `${action.checked ? "Select" : "Clear"} ${action.label}`;
-  if (action.type === "set_radio") return `Set ${action.label} to ${action.value}`;
-  if (action.type === "set_value") return `Set ${action.label} to ${action.value}`;
-  return action.label ?? "Suggested change";
-}
-
 function bindGuideDialog() {
   document.querySelectorAll("[data-open-guide]").forEach((button) => {
     button.addEventListener("click", () => openGuideDialog(button));
@@ -742,9 +555,7 @@ async function runAiReview(options = {}) {
   lastAiReview = review;
   setStoredItem("ai_review", JSON.stringify(review));
   setStoredItem("review_dismissals", JSON.stringify(reviewDismissals));
-  setStoredItem("copilot_context_prompts", JSON.stringify(review.copilot_context_prompts ?? []));
   renderAiReview(review);
-  renderCopilotContextPrompts(review.copilot_context_prompts ?? []);
   updateSummary(lastComputeResult);
   if (!options.skipStepChange) {
     activeStep = stepOrder.indexOf("results");
@@ -1146,7 +957,7 @@ function renderPdfExtractionSummary(extraction) {
     : "<p><strong>Required fields found</strong> Salary and TDS were extracted from the searchable PDF text.</p>";
   const aiStatus = extraction.ai?.attempted
     ? `AI assist: ${extraction.ai.source}${extraction.ai.model ? ` · ${extraction.ai.model}` : ""}`
-    : "AI assist: pattern extraction used; Hugging Face semantic matching is available when configured.";
+    : "Pattern extraction used for this searchable PDF.";
   return `
     <div class="pdf-extract-summary" data-testid="pdf-extract-summary">
       <span class="badge success">PDF reader</span>
@@ -1227,18 +1038,6 @@ function renderAiReview(review) {
       if (step && stepOrder.includes(step)) jumpToStep(step);
     });
   });
-}
-
-function renderCopilotContextPrompts(prompts = []) {
-  if (!prompts.length) {
-    copilotContextPrompts.innerHTML = "";
-    return;
-  }
-  copilotContextPrompts.innerHTML = prompts.map((item) => `
-    <button type="button" class="button secondary" data-chatbot-prompt="${escapeHtml(item.prompt)}" data-testid="copilot-context-prompt">
-      ${escapeHtml(item.label)}
-    </button>
-  `).join("");
 }
 
 function readinessText(readiness) {
@@ -1562,7 +1361,6 @@ async function deleteLocalData() {
     removeStoredItem("saved_scenarios");
     removeStoredItem("ai_review");
     removeStoredItem("review_dismissals");
-    removeStoredItem("copilot_context_prompts");
     form.reset();
     validationOutput.innerHTML = "";
     renderImportEmptyState();
@@ -1573,7 +1371,6 @@ async function deleteLocalData() {
     aiReviewCenter.innerHTML = "";
     aiReviewCenter.classList.add("empty-state");
     taxWaterfall.innerHTML = "";
-    copilotContextPrompts.innerHTML = "";
     launchOutput.innerHTML = "";
     lastReport = null;
     lastImportPreview = null;
@@ -1826,7 +1623,6 @@ function restoreAiReviewState() {
   reviewDismissals = dismissals.filter((item) => typeof item === "string").slice(0, 50);
   if (lastAiReview) {
     renderAiReview(lastAiReview);
-    renderCopilotContextPrompts(lastAiReview.copilot_context_prompts ?? []);
   }
 }
 
@@ -2071,7 +1867,6 @@ function resetDraft() {
   removeStoredItem("saved_scenarios");
   removeStoredItem("ai_review");
   removeStoredItem("review_dismissals");
-  removeStoredItem("copilot_context_prompts");
   form.reset();
   validationOutput.innerHTML = "";
   renderImportEmptyState();
@@ -2082,7 +1877,6 @@ function resetDraft() {
   aiReviewCenter.innerHTML = "";
   aiReviewCenter.classList.add("empty-state");
   taxWaterfall.innerHTML = "";
-  copilotContextPrompts.innerHTML = "";
   privacyOutput.innerHTML = "";
   launchOutput.innerHTML = "";
   lastReport = null;

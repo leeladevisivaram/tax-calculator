@@ -57,17 +57,6 @@ const MODULE_CLASSIFICATIONS = [
     test_surfaces: ["testing/tests/ai-review.test.mjs", "testing/tests/e2e/beginner-vnext.spec.mjs"]
   },
   {
-    id: "chatbot",
-    name: "Step-aware calculator assistant",
-    layer: "assistant",
-    risk_level: "medium",
-    files: ["src/chatbot-engine.mjs", "src/chatbot-knowledge.mjs", "src/chatbot-interactions.mjs", "data/chat-interactions/*.jsonl"],
-    endpoints: ["/api/v1/chatbot/message"],
-    responsibility: "Answer app-help questions, surface step-aware prompts, and log masked interactions for quality evaluation.",
-    robustness_controls: ["guardrail responses", "local knowledge retrieval", "masked interaction log", "quick action preview"],
-    test_surfaces: ["testing/tests/chatbot.test.mjs", "testing/tests/e2e/chatbot-ui.spec.mjs"]
-  },
-  {
     id: "reports",
     name: "Explainable reports and sources",
     layer: "evidence",
@@ -107,7 +96,7 @@ const MODULE_CLASSIFICATIONS = [
     risk_level: "high",
     files: ["public/index.html", "public/app.js", "public/storage-state.js", "public/styles.css"],
     endpoints: ["/", "/index.html", "/styles.css", "/app.js", "/ui-validation.js", "/storage-state.js"],
-    responsibility: "Guide users through persona onboarding, step health, import review, computation, what-if comparison, chatbot prompts, and isolated browser storage parsing.",
+    responsibility: "Guide users through persona onboarding, step health, import review, computation, what-if comparison, and isolated browser storage parsing.",
     robustness_controls: ["stable test IDs", "local-storage guards", "reduced-motion CSS", "context-aware action hints"],
     test_surfaces: ["testing/tests/e2e/ui-bvt.spec.mjs", "testing/tests/e2e/ui-regression.spec.mjs", "testing/tests/e2e/beginner-vnext.spec.mjs"]
   }

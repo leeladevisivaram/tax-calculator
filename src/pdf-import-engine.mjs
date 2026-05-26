@@ -6,7 +6,6 @@ import { toRupees } from "./money.mjs";
 
 export const PDF_IMPORT_VERSION = "pdf-import-v1";
 export const MAX_PDF_IMPORT_SIZE_BYTES = 384 * 1024;
-const DEFAULT_HF_PDF_MODEL = "Xenova/all-MiniLM-L6-v2";
 const SUPPORTED_PDF_IMPORT_TYPES = new Set(["form16"]);
 const PDF_TEXT_PREVIEW_LIMIT = 1000;
 
@@ -53,9 +52,6 @@ const FORM16_FIELD_DEFINITIONS = [
   }
 ];
 
-let pdfFeatureExtractorPromise;
-let pdfFeatureExtractorModel = "";
-
 export function getPdfImportCapabilities() {
   return {
     pdf_import_version: PDF_IMPORT_VERSION,
@@ -63,14 +59,8 @@ export function getPdfImportCapabilities() {
     max_pdf_size_bytes: MAX_PDF_IMPORT_SIZE_BYTES,
     extraction_modes: [
       "searchable_pdf_text",
-      "regex_form16_mapping",
-      "optional_huggingface_embedding_match"
+      "regex_form16_mapping"
     ],
-    huggingface: {
-      default_model: DEFAULT_HF_PDF_MODEL,
-      token_env: "HF_TOKEN or HF_ACCESS_TOKEN",
-      enabled_env: "PDF_IMPORT_AI_ENABLED=true"
-    },
     ocr: getOcrCapability(),
     required_fields: FORM16_FIELD_DEFINITIONS.filter((field) => field.required).map((field) => field.field)
   };
@@ -173,7 +163,7 @@ export async function extractForm16FieldsFromText(text, options = {}) {
   }
 
   const missingBeforeAi = missingRequiredFields(fields);
-  const aiTrace = await fillMissingFieldsWithAi({
+  const aiTrace = await fillMissingFieldsWithResolver({
     fields,
     missingFields: missingBeforeAi,
     lines,
@@ -463,33 +453,27 @@ function missingRequiredFields(fields) {
     .map((definition) => definition.field);
 }
 
-async function fillMissingFieldsWithAi({ fields, missingFields, lines, options }) {
+async function fillMissingFieldsWithResolver({ fields, missingFields, lines, options }) {
   const ai = {
     enabled: false,
     attempted: false,
-    model: options.model ?? process.env.HF_PDF_IMPORT_MODEL ?? DEFAULT_HF_PDF_MODEL,
     source: "not_configured"
   };
   const review = [];
   const warnings = [];
   if (missingFields.length === 0) return { ai, review, warnings };
 
-  const enabled = options.aiEnabled === true ||
-    process.env.PDF_IMPORT_AI_ENABLED === "true" ||
-    Boolean(process.env.HF_TOKEN || process.env.HF_ACCESS_TOKEN);
-  if (!enabled && typeof options.fieldResolver !== "function") return { ai, review, warnings };
+  if (typeof options.fieldResolver !== "function") return { ai, review, warnings };
 
   ai.enabled = true;
   ai.attempted = true;
   try {
-    const resolver = options.fieldResolver ?? resolveFieldsWithHuggingFaceEmbeddings;
-    const resolved = await resolver({
+    const resolved = await options.fieldResolver({
       missingFields,
       lines,
-      definitions: FORM16_FIELD_DEFINITIONS,
-      model: ai.model
+      definitions: FORM16_FIELD_DEFINITIONS
     });
-    ai.source = resolved?.source ?? "huggingface_embedding_match";
+    ai.source = resolved?.source ?? "custom_field_resolver";
     ai.score = resolved?.score ?? null;
 
     for (const item of resolved?.fields ?? []) {
@@ -499,83 +483,16 @@ async function fillMissingFieldsWithAi({ fields, missingFields, lines, options }
       fields[item.field] = amount;
       review.push(reviewExtraction(item.field, amount, ai.source, item.confidence ?? "medium", {
         evidence: item.evidence ?? "",
-        sourceLabel: "Hugging Face semantic match",
+        sourceLabel: "Assisted field match",
         needsReview: item.confidence !== "high"
       }));
     }
   } catch (error) {
-    ai.source = "model_fallback";
-    ai.error = error?.message ?? "Model extraction failed";
-    warnings.push("WARN_PDF_IMPORT_AI_FALLBACK");
+    ai.source = "resolver_fallback";
+    ai.error = error?.message ?? "Field resolver failed";
+    warnings.push("WARN_PDF_IMPORT_RESOLVER_FALLBACK");
   }
   return { ai, review, warnings };
-}
-
-async function resolveFieldsWithHuggingFaceEmbeddings({ missingFields, lines, definitions, model }) {
-  const candidates = lines
-    .map((line) => ({ line, amount: extractBestAmount(line) }))
-    .filter((candidate) => candidate.amount > 0)
-    .slice(0, 80);
-  if (candidates.length === 0) return { source: "huggingface_embedding_match", fields: [] };
-
-  const extractor = await getPdfFeatureExtractor(model);
-  const candidateEmbeddings = await Promise.all(candidates.map((candidate) => embedText(extractor, candidate.line)));
-  const fields = [];
-  let bestScore = 0;
-  for (const field of missingFields) {
-    const definition = definitions.find((item) => item.field === field);
-    if (!definition) continue;
-    const fieldEmbedding = await embedText(extractor, `${definition.label} Form 16 amount`);
-    const ranked = candidateEmbeddings
-      .map((embedding, index) => ({
-        ...candidates[index],
-        score: cosineSimilarity(fieldEmbedding, embedding)
-      }))
-      .sort((a, b) => b.score - a.score)[0];
-    if (ranked && ranked.score >= 0.42) {
-      fields.push({
-        field,
-        value: ranked.amount,
-        confidence: ranked.score >= 0.62 ? "medium" : "low"
-      });
-      bestScore = Math.max(bestScore, ranked.score);
-    }
-  }
-  return {
-    source: "huggingface_embedding_match",
-    score: bestScore,
-    fields
-  };
-}
-
-async function getPdfFeatureExtractor(model) {
-  if (!pdfFeatureExtractorPromise || pdfFeatureExtractorModel !== model) {
-    pdfFeatureExtractorModel = model;
-    pdfFeatureExtractorPromise = import("@huggingface/transformers").then(({ pipeline }) => {
-      return pipeline("feature-extraction", model, { dtype: "q8" });
-    });
-  }
-  return pdfFeatureExtractorPromise;
-}
-
-async function embedText(extractor, text) {
-  const output = await extractor(text, { pooling: "mean", normalize: true });
-  return Array.from(output.data ?? output.tolist?.()?.[0] ?? []);
-}
-
-function cosineSimilarity(left, right) {
-  const length = Math.min(left.length, right.length);
-  if (length === 0) return 0;
-  let dot = 0;
-  let leftNorm = 0;
-  let rightNorm = 0;
-  for (let index = 0; index < length; index += 1) {
-    dot += left[index] * right[index];
-    leftNorm += left[index] ** 2;
-    rightNorm += right[index] ** 2;
-  }
-  if (leftNorm === 0 || rightNorm === 0) return 0;
-  return dot / (Math.sqrt(leftNorm) * Math.sqrt(rightNorm));
 }
 
 function reviewExtraction(field, value, source, confidence, metadata = {}) {

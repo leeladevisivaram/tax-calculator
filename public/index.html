@@ -687,56 +687,6 @@
       </section>
     </main>
 
-    <section class="chatbot-widget" aria-label="Application assistant">
-      <button id="chatbot-toggle-button" type="button" class="chatbot-toggle" data-testid="chatbot-toggle-button" aria-controls="chatbot-panel" aria-expanded="false">
-        <span aria-hidden="true">?</span>
-        <span>Chat</span>
-      </button>
-
-      <div id="chatbot-panel" class="chatbot-panel is-hidden" role="dialog" aria-labelledby="chatbot-heading" data-testid="chatbot-panel">
-        <div class="chatbot-copilot-frame" data-testid="chatbot-copilot-panel">
-        <div class="chatbot-header">
-          <div>
-            <p class="eyebrow">Application assistant</p>
-            <h2 id="chatbot-heading">Calculator help</h2>
-          </div>
-          <button id="chatbot-close-button" type="button" class="button secondary" data-testid="chatbot-close-button">Close</button>
-        </div>
-
-        <div id="chatbot-messages" class="chatbot-messages" role="log" aria-live="polite" data-testid="chatbot-messages">
-          <div class="chat-message assistant">
-            <strong>Assistant</strong>
-            <p>I can help you use this calculator, explain missing-entry messages, and fill supported fields.</p>
-          </div>
-        </div>
-
-        <div class="chatbot-prompts" aria-label="Quick prompts">
-          <button type="button" class="button secondary" data-chatbot-prompt="I do not know tax where should I start?" data-testid="chatbot-prompt-start">Start guide</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="Where do I enter TDS?" data-testid="chatbot-prompt-tds">TDS help</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="Set gross salary to 900000" data-testid="chatbot-prompt-salary">Set salary</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="I know my income and deductions how should I compare regimes?" data-testid="chatbot-prompt-compare">Compare help</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="Can I upload a PDF Form 16?" data-testid="chatbot-prompt-unavailable">PDF import</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="Why is Age missing?" data-testid="chatbot-prompt-error">Age error</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="What should I do on this step?" data-testid="chatbot-prompt-active">Current step</button>
-          <button type="button" class="button secondary" data-chatbot-prompt="Explain my result summary" data-testid="chatbot-prompt-result">Explain result</button>
-        </div>
-        <div id="copilot-context-prompts" class="copilot-context-prompts" aria-label="AI review quick prompts"></div>
-
-        <p id="chatbot-ai-status" class="chatbot-ai-status" data-testid="chatbot-ai-status">AI assist is matching app help content.</p>
-
-        <form id="chatbot-form" class="chatbot-form" data-testid="chatbot-form">
-          <label>
-            <span class="sr-only">Ask the application assistant</span>
-            <input id="chatbot-input" name="chatbot_message" type="text" autocomplete="off" placeholder="Ask about this calculator..." data-testid="chatbot-input">
-          </label>
-          <button id="chatbot-send-button" type="submit" class="button primary" data-testid="chatbot-send-button">Send</button>
-        </form>
-
-        <div id="chatbot-action-preview" class="chatbot-action-preview" aria-live="polite" data-testid="chatbot-action-preview"></div>
-        </div>
-      </div>
-    </section>
-
     <script src="/react/react-app.js" type="module"></script>
     <script src="/app.js" type="module"></script>
   </body>

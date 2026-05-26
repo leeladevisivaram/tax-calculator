@@ -47,14 +47,6 @@ const CONTRACTS = [
     request_schema: "AiReviewRequest",
     response_schema: "AiReviewResponse",
     notes: "Runs local deterministic readiness and anomaly checks; hosted token is not required."
-  }),
-  contract({
-    endpoint: "/api/v1/chatbot/message",
-    methods: ["POST"],
-    layer: "assistant",
-    request_schema: "ChatbotMessageRequest",
-    response_schema: "ChatbotMessageResponse",
-    notes: "Answers app-help prompts and returns safe field actions where supported."
   })
 ];
 
@@ -98,21 +90,11 @@ const SCHEMAS = {
       dismissed_finding_ids: { type: "array", items: { type: "string" } }
     }
   },
-  ChatbotMessageRequest: {
-    type: "object",
-    required: ["message"],
-    properties: {
-      message: { type: "string" },
-      active_step: { type: "string" },
-      form_state: { type: "object" }
-    }
-  },
   ValidationReport: responseSchema(["status", "summary", "results"]),
   TaxComputationResponse: responseSchema(["status", "summary", "computation_hash", "rule_trace"]),
   RegimeComparisonResponse: responseSchema(["status", "recommended_regime", "old", "new", "delta"]),
   PdfExtractResponse: responseSchema(["status", "extraction", "preview"]),
-  AiReviewResponse: responseSchema(["status", "readiness", "confidence_score", "findings", "suggested_actions"]),
-  ChatbotMessageResponse: responseSchema(["status", "answer", "actions", "interaction_log"])
+  AiReviewResponse: responseSchema(["status", "readiness", "confidence_score", "findings", "suggested_actions"])
 };
 
 export function getApiContracts({ endpoint } = {}) {

@@ -17,7 +17,6 @@ describe("Feature: vNext guided accuracy AI review", () => {
     assert.ok(review.confidence_score < 90);
     assert.ok(review.findings.some((item) => item.id === "GA_INCOME_MISSING"));
     assert.ok(review.suggested_actions.some((item) => item.step === "income"));
-    assert.ok(review.copilot_context_prompts.some((item) => item.prompt === "What am I missing?"));
   });
 
   it("flags salary, TDS, deduction, duplicate, and regime-sensitive anomalies", async () => {

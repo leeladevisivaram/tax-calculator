@@ -210,13 +210,11 @@ ${modeNote}
 - Chrome browser UI automation in \`testing/tests/e2e/*.spec.mjs\`.
 - UI BVT coverage in \`testing/tests/e2e/ui-bvt.spec.mjs\`.
 - UI regression coverage in \`testing/tests/e2e/ui-regression.spec.mjs\`.
-- Dedicated chatbot UI and browser-request API coverage in \`testing/tests/e2e/chatbot-ui.spec.mjs\`.
 - Cross-functional UAT data-variation coverage in \`testing/tests/cross-functional-uat.test.mjs\`.
 - Cross-functional UI, accessibility, and language coverage in \`testing/tests/e2e/cross-functional-uat.spec.mjs\`.
 - Tax edge-case coverage in \`testing/tests/tax-edge-coverage.test.mjs\`.
 - UI gap coverage in \`testing/tests/e2e/ui-gap-coverage.spec.mjs\`.
-- Local chatbot guardrails, knowledge-bank schema, Hugging Face retrieval contract, and fallback coverage in \`testing/tests/chatbot.test.mjs\`.
-- Sprint 9 chatbot interaction logging, HRA assistant action, and supported CSV/JSON upload coverage in \`testing/tests/sprint9.test.mjs\` and \`testing/tests/e2e/sprint9-uat.spec.mjs\`.
+- Sprint 9 supported CSV/JSON/PDF upload coverage in \`testing/tests/sprint9.test.mjs\` and \`testing/tests/e2e/sprint9-uat.spec.mjs\`.
 - UI smoke, responsive layout, accessibility labels, missing-field validation, import validation, salary compute, regime comparison, explanation, report downloads, privacy, operations, and readiness flows.
 
 ## Failure Notes

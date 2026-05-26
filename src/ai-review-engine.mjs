@@ -37,8 +37,7 @@ export function getAiReviewCapabilities() {
     uses_existing_engines: [
       "/api/v1/tax/validate",
       "/api/v1/tax/compute",
-      "/api/v1/imports/pdf-extract",
-      "/api/v1/chatbot/message"
+      "/api/v1/imports/pdf-extract"
     ],
     finding_types: ["missing_input", "validation", "anomaly", "import_confidence", "result_readiness"]
   };
@@ -90,7 +89,6 @@ export async function reviewScenario(request = {}) {
   const readiness = readinessFromFindings(dedupedFindings, computeResult);
   const confidenceScore = confidenceFromFindings(dedupedFindings, { computeResult, importExtraction });
   const suggestedActions = buildSuggestedActions(dedupedFindings, readiness, activeStep);
-  const prompts = buildCopilotPrompts(dedupedFindings, readiness, activeStep, computeResult);
 
   return {
     status: "ok",
@@ -107,7 +105,6 @@ export async function reviewScenario(request = {}) {
     summary: summarizeFindings(dedupedFindings),
     findings: dedupedFindings,
     suggested_actions: suggestedActions,
-    copilot_context_prompts: prompts,
     field_confidence: fieldConfidenceFromExtraction(importExtraction),
     support: {
       validation_status: validationReport.status,
@@ -466,41 +463,6 @@ function buildSuggestedActions(findings, readiness, activeStep) {
     });
   }
   return actions;
-}
-
-function buildCopilotPrompts(findings, readiness, activeStep, computeResult) {
-  const prompts = [
-    {
-      id: "missing-fields",
-      label: "What am I missing?",
-      prompt: "What am I missing?"
-    },
-    {
-      id: "check-step",
-      label: "Check this step",
-      prompt: "Check this step"
-    }
-  ];
-  if (findings.some((item) => item.severity === "warning" || item.severity === "blocker")) {
-    prompts.push({
-      id: "explain-warning",
-      label: "Explain this warning",
-      prompt: "Explain this warning"
-    });
-  } else if (computeResult || readiness === "complete") {
-    prompts.push({
-      id: "explain-result",
-      label: "Explain my result",
-      prompt: "Explain my result summary"
-    });
-  } else {
-    prompts.push({
-      id: "next-action",
-      label: "Next action",
-      prompt: "What should I do on this step?"
-    });
-  }
-  return prompts.map((item) => ({ ...item, active_step: activeStep }));
 }
 
 function actionLabelForStep(step, item) {

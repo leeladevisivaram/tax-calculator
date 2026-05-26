@@ -24,7 +24,6 @@ test.describe("Feature: UI BVT - calculator shell", () => {
       await expect(page.getByRole("heading", { name: /build your tax scenario/i })).toBeVisible();
       await expect(page.getByTestId("guide-tab")).toBeVisible();
       await expect(page.getByTestId("action-group-draft")).toBeVisible();
-      await expect(page.getByTestId("chatbot-toggle-button")).toBeVisible();
       await expect(page.getByTestId("side-rail")).toBeVisible();
       await expect(page.getByTestId("usage-guide")).toBeHidden();
 
@@ -55,47 +54,6 @@ test.describe("Feature: UI BVT - calculator shell", () => {
           .map((control) => control.getAttribute("name") || control.outerHTML);
       });
       expect(controlsWithoutLabels).toEqual([]);
-    });
-
-    test("opens chatbot, answers app questions, fills fields, and refuses out-of-scope prompts", async ({ page }) => {
-      await openCalculator(page);
-
-      await page.getByTestId("chatbot-toggle-button").click();
-      await expect(page.getByTestId("chatbot-panel")).toBeVisible();
-      await expect(page.getByTestId("chatbot-ai-status")).toContainText("AI assist is matching app help content");
-
-      await page.getByTestId("chatbot-input").fill("Where do I enter TDS?");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("chatbot-messages")).toContainText("Credits");
-      await expect(page.getByTestId("panel-credits")).toBeVisible();
-      await expect(page.getByTestId("chatbot-ai-status")).toContainText(/AI assist/);
-
-      await page.getByTestId("chatbot-input").fill("I do not know tax where should I start?");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("chatbot-messages")).toContainText("Start with Profile");
-      await expect(page.getByTestId("panel-profile")).toBeVisible();
-
-      await page.getByTestId("chatbot-input").fill("Can I upload a PDF Form 16?");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("chatbot-messages")).toContainText("PDF upload is active");
-      await expect(page.getByTestId("panel-imports")).toBeVisible();
-
-      await page.getByTestId("chatbot-input").fill("Set gross salary to 900000");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("gross-salary")).toHaveValue("900000");
-      await expect(page.getByTestId("panel-income")).toBeVisible();
-
-      await page.getByTestId("chatbot-input").fill("Choose old regime and set gross salary to 800000");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("chatbot-action-preview")).toContainText("Review suggested changes");
-      await page.getByTestId("chatbot-apply-actions-button").click();
-      await expect(page.locator('[name="regime"][value="old"]')).toBeChecked();
-      await expect(page.getByTestId("gross-salary")).toHaveValue("800000");
-
-      await page.getByTestId("chatbot-input").fill("Which mutual fund should I buy?");
-      await page.getByTestId("chatbot-send-button").click();
-      await expect(page.getByTestId("chatbot-messages")).toContainText("I can’t answer questions outside the app");
-      await assertNoInternalLabels(page);
     });
 
     test("supports wizard navigation with keyboard-focusable primary actions", async ({ page }) => {
