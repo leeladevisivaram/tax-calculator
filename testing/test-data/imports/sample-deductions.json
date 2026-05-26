@@ -1,0 +1,12 @@
+[
+  {
+    "section": "80C",
+    "amount": 150000
+  },
+  {
+    "section": "80D",
+    "bucket": "self_family",
+    "premium": 25000,
+    "preventive_checkup": 5000
+  }
+]

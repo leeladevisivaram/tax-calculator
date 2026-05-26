@@ -1,0 +1,164 @@
+{
+  "rulepack_id": "ay-2025-26-v1",
+  "period_type": "assessment_year",
+  "period": "2025-26",
+  "act": "Income-tax Act, 1961",
+  "status": "active",
+  "currency": "INR",
+  "rounding": {
+    "internal_precision": "paise",
+    "display_precision": "rupee",
+    "final_tax_rounding": "nearest_rupee"
+  },
+  "source_register_version": "src-2026-05-08-v1",
+  "notes": [
+    "Sprint 1 covers normal salary income, standard deduction, 80C cap, slab tax, 87A rebate, surcharge placeholder, cess, and credits."
+  ],
+  "rules": [
+    {
+      "rule_id": "slab.new.ay2025.individual_huf",
+      "rule_type": "slab",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual", "huf"],
+        "residency": ["any"],
+        "age_band": ["any"],
+        "regime": ["new"],
+        "income_head": ["normal_income"]
+      },
+      "calculation": {
+        "slabs": [
+          {"from": 0, "to": 300000, "rate": 0},
+          {"from": 300000, "to": 700000, "rate": 0.05},
+          {"from": 700000, "to": 1000000, "rate": 0.1},
+          {"from": 1000000, "to": 1200000, "rate": 0.15},
+          {"from": 1200000, "to": 1500000, "rate": 0.2},
+          {"from": 1500000, "to": null, "rate": 0.3}
+        ]
+      },
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    },
+    {
+      "rule_id": "slab.old.ay2025.individual.ordinary",
+      "rule_type": "slab",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual", "huf"],
+        "residency": ["any"],
+        "age_band": ["ordinary", "not_applicable"],
+        "regime": ["old"],
+        "income_head": ["normal_income"]
+      },
+      "calculation": {
+        "slabs": [
+          {"from": 0, "to": 250000, "rate": 0},
+          {"from": 250000, "to": 500000, "rate": 0.05},
+          {"from": 500000, "to": 1000000, "rate": 0.2},
+          {"from": 1000000, "to": null, "rate": 0.3}
+        ]
+      },
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    },
+    {
+      "rule_id": "standard_deduction.new.ay2025.salary",
+      "rule_type": "standard_deduction",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual"],
+        "regime": ["new"],
+        "income_head": ["salary"]
+      },
+      "calculation": {"amount": 75000},
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    },
+    {
+      "rule_id": "standard_deduction.old.ay2025.salary",
+      "rule_type": "standard_deduction",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual"],
+        "regime": ["old"],
+        "income_head": ["salary"]
+      },
+      "calculation": {"amount": 50000},
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    },
+    {
+      "rule_id": "rebate.87a.new.ay2025",
+      "rule_type": "rebate",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual"],
+        "residency": ["resident"],
+        "regime": ["new"],
+        "income_head": ["normal_income"]
+      },
+      "calculation": {
+        "section": "87A",
+        "threshold_total_income": 700000,
+        "max_rebate": 25000,
+        "marginal_relief": true,
+        "may_offset_special_rate_tax": false
+      },
+      "sources": ["SRC-SECTION-87A"]
+    },
+    {
+      "rule_id": "rebate.87a.old.ay2025",
+      "rule_type": "rebate",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual"],
+        "residency": ["resident"],
+        "regime": ["old"],
+        "income_head": ["normal_income"]
+      },
+      "calculation": {
+        "section": "87A",
+        "threshold_total_income": 500000,
+        "max_rebate": 12500,
+        "marginal_relief": false,
+        "may_offset_special_rate_tax": false
+      },
+      "sources": ["SRC-SECTION-87A"]
+    },
+    {
+      "rule_id": "surcharge.individual_huf.ay2025",
+      "rule_type": "surcharge",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual", "huf"],
+        "regime": ["any"]
+      },
+      "calculation": {
+        "tiers": [
+          {"from": 0, "to": 5000000, "rate": 0},
+          {"from": 5000000, "to": 10000000, "rate": 0.1},
+          {"from": 10000000, "to": 20000000, "rate": 0.15},
+          {"from": 20000000, "to": null, "rate": 0.25}
+        ],
+        "special_income_max_rate": 0.15
+      },
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    },
+    {
+      "rule_id": "cess.health_education.ay2025",
+      "rule_type": "cess",
+      "status": "active",
+      "applies_to": {
+        "periods": ["2025-26"],
+        "taxpayer_type": ["individual", "huf"],
+        "regime": ["any"]
+      },
+      "calculation": {"rate": 0.04},
+      "sources": ["SRC-ITD-SALARIED-AY2025"]
+    }
+  ]
+}
+

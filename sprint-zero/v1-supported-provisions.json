@@ -1,0 +1,212 @@
+{
+  "artifact": "v1-supported-provisions",
+  "status": "draft_pending_signoff",
+  "created_on": "2026-05-08",
+  "source_register_version": "src-2026-05-08-v1",
+  "signoff": {
+    "product": {"status": "pending", "owner": "TBD", "date": null},
+    "tax_domain": {"status": "pending", "owner": "TBD", "date": null},
+    "engineering": {"status": "pending", "owner": "TBD", "date": null}
+  },
+  "decisions": [
+    {
+      "provision_id": "period.selector.ay_ty",
+      "name": "Assessment Year / Tax Year selector",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-TRANSITION-2026"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "slab.old.individual_huf",
+      "name": "Old regime slabs for individual/HUF",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-ITD-SALARIED-AY2025"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "slab.new.individual_huf",
+      "name": "New regime slabs for individual/HUF",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-ITD-SALARIED-AY2025", "SRC-BUDGET-2025-BRIEF"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "rebate.87a",
+      "name": "Section 87A rebate and marginal relief",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-87A", "SRC-BENEFITS-IND-HUF", "SRC-BUDGET-2025-BRIEF"],
+      "review_status": "pending_domain_review",
+      "notes": ["Special-rate income offset restriction must be explicitly tested."]
+    },
+    {
+      "provision_id": "surcharge.cess",
+      "name": "Surcharge, marginal relief, and health and education cess",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-ITD-SALARIED-AY2025"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "salary.standard_deduction",
+      "name": "Salary standard deduction",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-ITD-SALARIED-AY2025"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "salary.hra",
+      "name": "HRA exemption",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-HRA-LTA-SALARIED-BENEFITS"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "salary.lta",
+      "name": "LTA / LTC exemption",
+      "v1_decision": "supported_with_guardrails",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-HRA-LTA-SALARIED-BENEFITS", "SRC-RULE-2B"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "house_property.24b",
+      "name": "House-property interest and loss set-off",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-HOUSE-PROPERTY", "SRC-SECTION-24", "SRC-ITD-SALARIED-AY2026"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "chapter_via.common",
+      "name": "Common Chapter VI-A deductions",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "review_status": "pending_domain_review",
+      "sections": ["80C", "80CCC", "80CCD(1)", "80CCD(1B)", "80CCD(2)", "80D", "80DD", "80DDB", "80E", "80EE", "80EEA", "80EEB", "80G", "80GG", "80GGA", "80GGC", "80TTA", "80TTB", "80U", "80CCH"]
+    },
+    {
+      "provision_id": "capital_gains.111a",
+      "name": "Section 111A STCG",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-111A", "SRC-FINANCE-2024-CG", "SRC-TAX-RATES-COMPUTATION"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "capital_gains.112a",
+      "name": "Section 112A LTCG",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-112A", "SRC-FINANCE-2024-CG", "SRC-TAX-RATES-COMPUTATION"],
+      "review_status": "pending_domain_review",
+      "domain_review_required": true,
+      "notes": ["Confirm executable threshold for pre-23-Jul-2024 transfers in FY 2024-25 before final sign-off."]
+    },
+    {
+      "provision_id": "capital_gains.112",
+      "name": "Section 112 LTCG and land/building grandfathering",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-112", "SRC-FINANCE-2024-CG", "SRC-TAX-RATES-COMPUTATION"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "capital_gains.50aa",
+      "name": "Section 50AA specified assets",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-CAPITAL-GAIN-GUIDE"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "business.44ad",
+      "name": "Section 44AD presumptive business income",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-44AD", "SRC-ITR4-FAQ"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "business.44ada",
+      "name": "Section 44ADA presumptive professional income",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-44ADA", "SRC-ITR4-FAQ"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "business.44ae",
+      "name": "Section 44AE goods carriage presumptive income",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-44AE", "SRC-ITR4-FAQ"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "business.44ab_audit",
+      "name": "Section 44AB audit trigger checks",
+      "v1_decision": "supported_as_warnings",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-44AB-AUDIT"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "tds.summary",
+      "name": "TDS/TCS and tax credit summary",
+      "v1_decision": "supported_summary",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-BUDGET-2025-SPEECH", "SRC-SECTION-194T"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "interest.234abc_234f",
+      "name": "Advance tax interest and late fee",
+      "v1_decision": "supported_core",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-SECTION-234A", "SRC-SECTION-234B", "SRC-ADVANCE-TAX-DATES", "SRC-INTEREST-FEES", "SRC-SECTION-234F"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "itr.recommendation.1_4",
+      "name": "ITR-1, ITR-2, ITR-3, ITR-4 recommendation",
+      "v1_decision": "supported",
+      "implementation_priority": "must_have",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-BUSINESS-AY2026", "SRC-ITR4-FAQ"],
+      "review_status": "pending_domain_review"
+    },
+    {
+      "provision_id": "nri.dtaa",
+      "name": "NRI / DTAA computation",
+      "v1_decision": "excluded_v1",
+      "implementation_priority": "future",
+      "source_ids": [],
+      "review_status": "excluded",
+      "fail_closed_message": "NRI and DTAA scenarios are outside v1 supported scope."
+    },
+    {
+      "provision_id": "entity.itr_5_6_7",
+      "name": "Entity returns ITR-5, ITR-6, ITR-7",
+      "v1_decision": "excluded_v1",
+      "implementation_priority": "future",
+      "source_ids": [],
+      "review_status": "excluded",
+      "fail_closed_message": "Entity return support beyond ITR-1/2/3/4 requires a separate rulebook pass."
+    },
+    {
+      "provision_id": "gst.calculation",
+      "name": "GST calculation",
+      "v1_decision": "excluded_v1",
+      "implementation_priority": "future",
+      "source_ids": [],
+      "review_status": "excluded",
+      "fail_closed_message": "GST is outside direct-tax v1 scope."
+    }
+  ]
+}

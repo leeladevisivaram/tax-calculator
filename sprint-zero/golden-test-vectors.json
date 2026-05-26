@@ -1,0 +1,795 @@
+{
+  "artifact": "golden-test-vectors",
+  "status": "draft_pending_domain_review",
+  "created_on": "2026-05-08",
+  "source_register_version": "src-2026-05-08-v1",
+  "assertion_contract": {
+    "path": "Dot path into the eventual compute or validation response.",
+    "operator": "One of equals, greater_than, less_than_or_equal, contains, disallowed, allowed, caps_at, chooses_lower_of, warning_contains.",
+    "value": "Expected value or expected semantic assertion."
+  },
+  "vectors": [
+    {
+      "id": "TV-001",
+      "status": "draft",
+      "title": "AY 2026-27 new regime salary at no-tax threshold",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-SECTION-87A"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"salary": {"gross_salary": 1275000}},
+        "deductions": {"standard_deduction": true},
+        "tax_credits": {}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.standard_deduction", "operator": "equals", "value": 75000},
+          {"path": "summary.total_income", "operator": "equals", "value": 1200000},
+          {"path": "summary.tax_before_rebate", "operator": "equals", "value": 60000},
+          {"path": "summary.rebate_87a", "operator": "equals", "value": 60000},
+          {"path": "summary.net_tax_liability", "operator": "equals", "value": 0}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-002",
+      "status": "draft",
+      "title": "AY 2026-27 new regime marginal relief just above Rs. 12 lakh",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-SECTION-87A", "SRC-BENEFITS-IND-HUF"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"salary": {"gross_salary": 1280000}},
+        "deductions": {"standard_deduction": true},
+        "tax_credits": {}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.total_income", "operator": "equals", "value": 1205000},
+          {"path": "summary.tax_before_rebate", "operator": "equals", "value": 60750},
+          {"path": "summary.tax_after_marginal_relief_before_cess", "operator": "equals", "value": 5000},
+          {"path": "summary.cess", "operator": "equals", "value": 200},
+          {"path": "summary.net_tax_liability", "operator": "equals", "value": 5200}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-003",
+      "status": "draft",
+      "title": "AY 2025-26 new regime salary at Rs. 7 lakh total income threshold",
+      "rulepack_id": "ay-2025-26-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2025", "SRC-SECTION-87A"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2025-26",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"salary": {"gross_salary": 775000}},
+        "deductions": {"standard_deduction": true},
+        "tax_credits": {}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.standard_deduction", "operator": "equals", "value": 75000},
+          {"path": "summary.total_income", "operator": "equals", "value": 700000},
+          {"path": "summary.tax_before_rebate", "operator": "equals", "value": 20000},
+          {"path": "summary.rebate_87a", "operator": "equals", "value": 20000},
+          {"path": "summary.net_tax_liability", "operator": "equals", "value": 0}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-004",
+      "status": "draft",
+      "title": "AY 2026-27 old regime salary reduced to Rs. 5 lakh by 80C",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026", "SRC-SECTION-87A"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"salary": {"gross_salary": 700000}},
+        "deductions": {"standard_deduction": true, "chapter_via": [{"section": "80C", "amount": 150000}]},
+        "tax_credits": {}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.standard_deduction", "operator": "equals", "value": 50000},
+          {"path": "summary.chapter_via_allowed", "operator": "equals", "value": 150000},
+          {"path": "summary.total_income", "operator": "equals", "value": 500000},
+          {"path": "summary.tax_before_rebate", "operator": "equals", "value": 12500},
+          {"path": "summary.rebate_87a", "operator": "equals", "value": 12500},
+          {"path": "summary.net_tax_liability", "operator": "equals", "value": 0}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-005",
+      "status": "draft",
+      "title": "AY 2026-27 new regime rebate must not offset 112A special-rate tax",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-87A", "SRC-SECTION-112A", "SRC-BUDGET-2025-BRIEF"],
+      "domain_review_required": true,
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {
+          "salary": {"gross_salary": 1275000},
+          "capital_gains": [{"section": "112A", "transfer_date": "2025-08-15", "net_gain": 300000, "stt_paid": true}]
+        },
+        "deductions": {"standard_deduction": true},
+        "tax_credits": {}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.112A.taxable_gain", "operator": "equals", "value": 175000},
+          {"path": "summary.special_rate_tax.112A.tax_before_cess", "operator": "equals", "value": 21875},
+          {"path": "summary.rebate_87a_offsets_special_rate_tax", "operator": "equals", "value": false}
+        ],
+        "warnings": ["WARN_REBATE_SPECIAL_RATE_LIMIT"]
+      }
+    },
+    {
+      "id": "TV-006",
+      "status": "draft",
+      "title": "111A STCG after 23 Jul 2024",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-111A", "SRC-FINANCE-2024-CG"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "111A", "transfer_date": "2025-08-15", "net_gain": 200000, "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.111A.rate", "operator": "equals", "value": 0.2},
+          {"path": "summary.special_rate_tax.111A.tax_before_cess", "operator": "equals", "value": 40000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-007",
+      "status": "draft",
+      "title": "111A STCG before 23 Jul 2024",
+      "rulepack_id": "ay-2025-26-v1",
+      "source_ids": ["SRC-SECTION-111A", "SRC-FINANCE-2024-CG"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2025-26",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "111A", "transfer_date": "2024-07-15", "net_gain": 200000, "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.111A.rate", "operator": "equals", "value": 0.15},
+          {"path": "summary.special_rate_tax.111A.tax_before_cess", "operator": "equals", "value": 30000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-008",
+      "status": "draft",
+      "title": "112A LTCG after 23 Jul 2024",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-112A", "SRC-FINANCE-2024-CG"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "112A", "transfer_date": "2025-08-15", "net_gain": 300000, "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.112A.exemption_threshold", "operator": "equals", "value": 125000},
+          {"path": "summary.special_rate_tax.112A.taxable_gain", "operator": "equals", "value": 175000},
+          {"path": "summary.special_rate_tax.112A.rate", "operator": "equals", "value": 0.125},
+          {"path": "summary.special_rate_tax.112A.tax_before_cess", "operator": "equals", "value": 21875}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-009",
+      "status": "draft",
+      "title": "112A LTCG before 23 Jul 2024 threshold confirmation",
+      "rulepack_id": "ay-2025-26-v1",
+      "source_ids": ["SRC-SECTION-112A", "SRC-FINANCE-2024-CG"],
+      "domain_review_required": true,
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2025-26",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "112A", "transfer_date": "2024-07-15", "net_gain": 300000, "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.112A.rate", "operator": "equals", "value": 0.1},
+          {"path": "summary.special_rate_tax.112A.threshold_requires_domain_signoff", "operator": "equals", "value": true}
+        ],
+        "warnings": ["WARN_112A_PRE_2024_07_23_THRESHOLD_REVIEW"]
+      }
+    },
+    {
+      "id": "TV-010",
+      "status": "draft",
+      "title": "General 112 LTCG after 23 Jul 2024",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-112", "SRC-FINANCE-2024-CG"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "112", "transfer_date": "2025-08-15", "asset_type": "listed_debenture", "net_gain": 400000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.112.rate", "operator": "equals", "value": 0.125},
+          {"path": "summary.special_rate_tax.112.tax_before_cess", "operator": "equals", "value": 50000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-011",
+      "status": "draft",
+      "title": "Resident land/building grandfathering chooses lower tax",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-112", "SRC-CAPITAL-GAIN-GUIDE"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 45,
+        "regime": "old",
+        "income": {
+          "capital_gains": [
+            {
+              "section": "112",
+              "asset_type": "land_building",
+              "acquisition_date": "2020-04-01",
+              "transfer_date": "2025-08-15",
+              "gain_without_indexation": 800000,
+              "gain_with_indexation": 500000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.special_rate_tax.112.new_law_tax", "operator": "equals", "value": 100000},
+          {"path": "summary.special_rate_tax.112.old_law_indexed_tax", "operator": "equals", "value": 100000},
+          {"path": "summary.special_rate_tax.112.final_tax_before_cess", "operator": "chooses_lower_of", "value": ["new_law_tax", "old_law_indexed_tax"]}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-012",
+      "status": "draft",
+      "title": "Section 50AA specified asset treated as short-term",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-CAPITAL-GAIN-GUIDE"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"capital_gains": [{"section": "50AA", "asset_type": "specified_mutual_fund", "transfer_date": "2025-08-15", "net_gain": 100000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.capital_gains[0].classification", "operator": "equals", "value": "short_term"},
+          {"path": "summary.capital_gains[0].tax_rate_type", "operator": "equals", "value": "applicable_rate"}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-013",
+      "status": "draft",
+      "title": "Resident basic exemption adjustment against special capital gains",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-111A", "SRC-SECTION-112"],
+      "domain_review_required": true,
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"other_sources": [{"type": "interest", "amount": 100000}], "capital_gains": [{"section": "111A", "net_gain": 200000, "transfer_date": "2025-08-15", "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.basic_exemption_adjustment.applied", "operator": "equals", "value": true},
+          {"path": "summary.basic_exemption_adjustment.available_amount", "operator": "equals", "value": 150000},
+          {"path": "summary.special_rate_tax.111A.taxable_after_basic_exemption_adjustment", "operator": "equals", "value": 50000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-014",
+      "status": "draft",
+      "title": "Non-resident basic exemption adjustment blocked where not allowed",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-111A", "SRC-SECTION-112"],
+      "domain_review_required": true,
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "non_resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"other_sources": [{"type": "interest", "amount": 100000}], "capital_gains": [{"section": "111A", "net_gain": 200000, "transfer_date": "2025-08-15", "stt_paid": true}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.basic_exemption_adjustment.applied", "operator": "equals", "value": false}
+        ],
+        "warnings": ["WARN_BASIC_EXEMPTION_ADJUSTMENT_NOT_AVAILABLE"]
+      }
+    },
+    {
+      "id": "TV-015",
+      "status": "draft",
+      "title": "Old-regime metro HRA least-of formula",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HRA-LTA-SALARIED-BENEFITS"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {
+          "salary": {
+            "basic_salary": 600000,
+            "dearness_allowance_retirement_benefit": 0,
+            "turnover_commission": 0,
+            "hra_received": 300000,
+            "rent_paid": 240000,
+            "metro_city": true
+          }
+        }
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.exemptions.hra.actual_hra", "operator": "equals", "value": 300000},
+          {"path": "summary.exemptions.hra.rent_minus_10_percent_salary", "operator": "equals", "value": 180000},
+          {"path": "summary.exemptions.hra.metro_salary_percent", "operator": "equals", "value": 300000},
+          {"path": "summary.exemptions.hra.allowed", "operator": "equals", "value": 180000}
+        ],
+        "warnings": ["WARN_LANDLORD_PAN_MAY_BE_REQUIRED"]
+      }
+    },
+    {
+      "id": "TV-016",
+      "status": "draft",
+      "title": "New-regime HRA disallowed",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HRA-LTA-SALARIED-BENEFITS", "SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"salary": {"basic_salary": 600000, "hra_received": 300000, "rent_paid": 240000, "metro_city": true}}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.exemptions.hra.allowed", "operator": "equals", "value": 0},
+          {"path": "validation.hra_new_regime", "operator": "disallowed", "value": true}
+        ],
+        "warnings": ["WARN_HRA_NOT_AVAILABLE_NEW_REGIME"]
+      }
+    },
+    {
+      "id": "TV-017",
+      "status": "draft",
+      "title": "LTA claim beyond supported journey block",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HRA-LTA-SALARIED-BENEFITS", "SRC-RULE-2B"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"salary": {"lta_received": 80000}},
+        "claims": {"lta": {"journeys_already_claimed_in_block": 2, "current_claim_amount": 80000}}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.exemptions.lta.allowed", "operator": "equals", "value": 0},
+          {"path": "validation.lta_block_limit", "operator": "disallowed", "value": true}
+        ],
+        "warnings": ["WARN_LTA_BLOCK_LIMIT_EXCEEDED"]
+      }
+    },
+    {
+      "id": "TV-018",
+      "status": "draft",
+      "title": "Old-regime self-occupied house-property interest capped at Rs. 2 lakh",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HOUSE-PROPERTY", "SRC-SECTION-24"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"house_property": [{"property_type": "self_occupied", "loan_purpose": "purchase", "loan_date": "2020-04-01", "interest_paid": 280000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.house_property[0].interest_allowed", "operator": "caps_at", "value": 200000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-019",
+      "status": "draft",
+      "title": "Old-regime let-out house-property loss set-off capped at Rs. 2 lakh",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HOUSE-PROPERTY"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"salary": {"gross_salary": 1000000}, "house_property": [{"property_type": "let_out", "computed_loss": 300000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.house_property_loss_setoff_against_other_heads", "operator": "caps_at", "value": 200000},
+          {"path": "summary.house_property_loss_carry_forward", "operator": "equals", "value": 100000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-020",
+      "status": "draft",
+      "title": "New-regime let-out house-property loss not cross-set off",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-HOUSE-PROPERTY", "SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"salary": {"gross_salary": 1000000}, "house_property": [{"property_type": "let_out", "computed_loss": 300000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.house_property_loss_setoff_against_other_heads", "operator": "equals", "value": 0}
+        ],
+        "warnings": ["WARN_HOUSE_PROPERTY_LOSS_SET_OFF_NOT_AVAILABLE_NEW_REGIME"]
+      }
+    },
+    {
+      "id": "TV-021",
+      "status": "draft",
+      "title": "80C family cap",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "deductions": {"chapter_via": [{"section": "80C", "amount": 220000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.deductions.80C.allowed", "operator": "caps_at", "value": 150000}
+        ],
+        "warnings": ["WARN_80C_CAP_APPLIED"]
+      }
+    },
+    {
+      "id": "TV-022",
+      "status": "draft",
+      "title": "80D self and senior-parent buckets",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "deductions": {
+          "chapter_via": [
+            {"section": "80D", "bucket": "self_family", "premium": 24000, "preventive_checkup": 6000, "senior": false},
+            {"section": "80D", "bucket": "parents", "premium": 48000, "preventive_checkup": 5000, "senior": true}
+          ]
+        }
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.deductions.80D.self_family_allowed", "operator": "caps_at", "value": 25000},
+          {"path": "summary.deductions.80D.parents_allowed", "operator": "caps_at", "value": 50000},
+          {"path": "summary.deductions.80D.total_allowed", "operator": "equals", "value": 75000}
+        ],
+        "warnings": ["WARN_80D_PREVENTIVE_INCLUDED_IN_BUCKET_CAP"]
+      }
+    },
+    {
+      "id": "TV-023",
+      "status": "draft",
+      "title": "80GG least-of formula",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "income": {"business_profession": [{"type": "freelance", "net_income": 600000}]},
+        "deductions": {"chapter_via": [{"section": "80GG", "rent_paid": 180000, "specified_total_income": 600000, "form_10ba_acknowledgement": "ACK123"}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.deductions.80GG.rent_minus_10_percent_total_income", "operator": "equals", "value": 120000},
+          {"path": "summary.deductions.80GG.monthly_cap", "operator": "equals", "value": 60000},
+          {"path": "summary.deductions.80GG.twenty_five_percent_total_income", "operator": "equals", "value": 150000},
+          {"path": "summary.deductions.80GG.allowed", "operator": "equals", "value": 60000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-024",
+      "status": "draft",
+      "title": "80TTA non-senior and 80TTB senior interest deductions",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "cases": [
+          {"case_id": "non_senior", "age_years": 34, "residency": "resident", "interest": {"savings": 18000, "deposit": 0}},
+          {"case_id": "senior", "age_years": 65, "residency": "resident", "interest": {"savings": 18000, "deposit": 45000}}
+        ],
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "regime": "old"
+      },
+      "expected": {
+        "assertions": [
+          {"path": "cases.non_senior.summary.deductions.80TTA.allowed", "operator": "equals", "value": 10000},
+          {"path": "cases.senior.summary.deductions.80TTB.allowed", "operator": "equals", "value": 50000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-025",
+      "status": "draft",
+      "title": "80EE and 80EEA double claim validation",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-ITD-SALARIED-AY2026"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "old",
+        "deductions": {"chapter_via": [{"section": "80EE", "amount": 50000}, {"section": "80EEA", "amount": 150000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "validation.80ee_80eea_double_claim", "operator": "disallowed", "value": true}
+        ],
+        "warnings": ["WARN_80EE_80EEA_MUTUAL_EXCLUSION"]
+      }
+    },
+    {
+      "id": "TV-026",
+      "status": "draft",
+      "title": "44AD enhanced threshold and 6 percent digital receipts",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-44AD", "SRC-ITR4-FAQ"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"business_profession": [{"section": "44AD", "turnover": 25000000, "cash_receipts": 1000000, "digital_receipts": 24000000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.business_profession.44AD.enhanced_threshold_available", "operator": "equals", "value": true},
+          {"path": "summary.business_profession.44AD.deemed_income", "operator": "equals", "value": 1520000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-027",
+      "status": "draft",
+      "title": "44AD enhanced threshold unavailable when cash receipts exceed 5 percent",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-44AD", "SRC-ITR4-FAQ"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"business_profession": [{"section": "44AD", "turnover": 25000000, "cash_receipts": 2000000, "digital_receipts": 23000000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.business_profession.44AD.enhanced_threshold_available", "operator": "equals", "value": false},
+          {"path": "validation.44AD_turnover_exceeds_standard_threshold", "operator": "warning_contains", "value": "Enhanced Rs. 3 crore threshold unavailable because cash receipts exceed 5 percent."}
+        ],
+        "warnings": ["WARN_44AD_ENHANCED_THRESHOLD_UNAVAILABLE"]
+      }
+    },
+    {
+      "id": "TV-028",
+      "status": "draft",
+      "title": "44ADA enhanced threshold with cash receipts within 5 percent",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-44ADA", "SRC-ITR4-FAQ"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"business_profession": [{"section": "44ADA", "gross_receipts": 7000000, "cash_receipts": 300000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.business_profession.44ADA.enhanced_threshold_available", "operator": "equals", "value": true},
+          {"path": "summary.business_profession.44ADA.deemed_income", "operator": "equals", "value": 3500000}
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "id": "TV-029",
+      "status": "draft",
+      "title": "44ADA enhanced threshold unavailable when cash receipts exceed 5 percent",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-SECTION-44ADA", "SRC-ITR4-FAQ"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "taxpayer_type": "individual",
+        "residency": "resident",
+        "age_years": 34,
+        "regime": "new",
+        "income": {"business_profession": [{"section": "44ADA", "gross_receipts": 7000000, "cash_receipts": 500000}]}
+      },
+      "expected": {
+        "assertions": [
+          {"path": "summary.business_profession.44ADA.enhanced_threshold_available", "operator": "equals", "value": false},
+          {"path": "validation.44ADA_receipts_exceed_standard_threshold", "operator": "warning_contains", "value": "Enhanced Rs. 75 lakh threshold unavailable because cash receipts exceed 5 percent."}
+        ],
+        "warnings": ["WARN_44ADA_ENHANCED_THRESHOLD_UNAVAILABLE"]
+      }
+    },
+    {
+      "id": "TV-030",
+      "status": "draft",
+      "title": "Advance tax differs for regular and presumptive taxpayers",
+      "rulepack_id": "ay-2026-27-v1",
+      "source_ids": ["SRC-BUSINESS-AY2026", "SRC-SECTION-44AD", "SRC-SECTION-44ADA", "SRC-ADVANCE-TAX-DATES"],
+      "input": {
+        "period_type": "assessment_year",
+        "period": "2026-27",
+        "act": "Income-tax Act, 1961",
+        "cases": [
+          {"case_id": "regular", "taxpayer_type": "individual", "business_profession": [{"type": "normal_business"}], "advance_tax_paid_by_dates": {"2025-06-15": 0, "2025-09-15": 0, "2025-12-15": 0, "2026-03-15": 0}},
+          {"case_id": "presumptive", "taxpayer_type": "individual", "business_profession": [{"section": "44AD"}], "advance_tax_paid_by_dates": {"2025-06-15": 0, "2025-09-15": 0, "2025-12-15": 0, "2026-03-15": 100000}}
+        ]
+      },
+      "expected": {
+        "assertions": [
+          {"path": "cases.regular.validation.advance_tax_schedule", "operator": "equals", "value": "quarterly_15_45_75_100"},
+          {"path": "cases.presumptive.validation.advance_tax_schedule", "operator": "equals", "value": "single_100_percent_by_15_march"}
+        ],
+        "warnings": ["WARN_ADVANCE_TAX_SHORTFALL_REGULAR_CASE"]
+      }
+    }
+  ]
+}

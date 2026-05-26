@@ -1,0 +1,31 @@
+{
+  "name": "tax-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "check": "node scripts/check-syntax.mjs",
+    "build": "vite build --config vite.config.mjs",
+    "test": "node scripts/run-tests-with-report.mjs",
+    "test:node": "node --test testing/tests/*.test.mjs",
+    "test:e2e": "npm run build && playwright test --config playwright.config.mjs",
+    "test:parallel5:headless-false": "HEADLESS=false PW_WORKERS=5 node scripts/run-tests-with-report.mjs",
+    "chatbot:eval": "node scripts/chatbot-eval.mjs",
+    "dev": "npm run build && node src/server.mjs",
+    "preview": "npm run build && node src/server.mjs",
+    "start": "node src/server.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.59.1"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "3.8.1",
+    "@vitejs/plugin-react": "6.0.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "vite": "8.0.12"
+  }
+}

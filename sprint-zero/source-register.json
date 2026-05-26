@@ -1,0 +1,278 @@
+{
+  "source_register_version": "src-2026-05-08-v1",
+  "status": "finalized_for_v1_launch",
+  "retrieved_on": "2026-05-08",
+  "source_policy": {
+    "preferred_sources": [
+      "Income Tax Department e-Filing portal",
+      "incometaxindia.gov.in Income-tax Act and Finance Act pages",
+      "Union Budget documents hosted on indiabudget.gov.in"
+    ],
+    "activation_rule": "A runtime rule cannot become active unless it references at least one source_id from this register."
+  },
+  "sources": [
+    {
+      "source_id": "SRC-TRANSITION-2026",
+      "title": "Objective and scope of the New Act FAQs",
+      "publisher": "Income Tax Department e-Filing portal",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/objective-and-scope-new-act-faq",
+      "source_type": "official_faq",
+      "confidence": "primary",
+      "covers": ["assessment_year_vs_tax_year", "1961_act_2025_act_parallel_support", "new_regime_continuity"]
+    },
+    {
+      "source_id": "SRC-ITD-SALARIED-AY2026",
+      "title": "Salaried Individuals for AY 2026-27",
+      "publisher": "Income Tax Department e-Filing portal",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1",
+      "source_type": "official_help",
+      "confidence": "primary",
+      "covers": ["ay_2026_27_slabs", "surcharge", "cess", "rebate_87a", "itr_1", "itr_2", "itr_3", "itr_4", "chapter_via", "house_property"]
+    },
+    {
+      "source_id": "SRC-ITD-SALARIED-AY2025",
+      "title": "Salaried Individuals for AY 2025-26",
+      "publisher": "Income Tax Department e-Filing portal",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-3",
+      "source_type": "official_help",
+      "confidence": "primary_with_note",
+      "covers": ["ay_2025_26_slabs", "surcharge", "cess", "rebate_87a", "itr_1", "itr_2", "itr_3", "itr_4"],
+      "notes": ["Search result labels this page as demo; confirm canonical AY 2025-26 page during domain review."]
+    },
+    {
+      "source_id": "SRC-SECTION-87A",
+      "title": "Section 87A - Rebate of income-tax in case of certain individuals",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/section-87a-26",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["old_regime_87a", "new_regime_87a", "ay_2026_27_60000_rebate", "special_rate_rebate_limit"]
+    },
+    {
+      "source_id": "SRC-BENEFITS-IND-HUF",
+      "title": "Individual and HUF - Benefits allowable",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Charts%20%20Tables/Benefits_available_to_Individual_HUF.htm",
+      "source_type": "official_chart",
+      "confidence": "primary",
+      "covers": ["87a_summary", "individual_huf_benefits", "115bac"]
+    },
+    {
+      "source_id": "SRC-BUDGET-2025-BRIEF",
+      "title": "Brief on Budget",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/brief-on-budget",
+      "source_type": "official_summary",
+      "confidence": "primary",
+      "covers": ["ay_2026_27_new_regime_slabs", "87a_12_lakh", "special_rate_income_exclusion"]
+    },
+    {
+      "source_id": "SRC-BUDGET-2025-SPEECH",
+      "title": "Budget 2025-26 Speech",
+      "publisher": "Union Budget, Ministry of Finance",
+      "url": "https://www.indiabudget.gov.in/doc/bspeech/bs2025_26.pdf",
+      "source_type": "official_budget_pdf",
+      "confidence": "primary",
+      "covers": ["tds_threshold_changes_2025", "personal_tax_policy_context"]
+    },
+    {
+      "source_id": "SRC-HRA-LTA-SALARIED-BENEFITS",
+      "title": "Employees - Benefits allowable",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/charts%20%20tables/list_of_benefits_available_to_a_salaried_person_final.htm",
+      "source_type": "official_chart",
+      "confidence": "primary",
+      "covers": ["hra_formula", "landlord_pan_warning", "lta_fare_caps", "lta_two_journeys"]
+    },
+    {
+      "source_id": "SRC-RULE-2B",
+      "title": "Conditions for the purpose of section 10(5)",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/rules/income-tax%20rules/103120000000006903.htm",
+      "source_type": "income_tax_rule",
+      "confidence": "primary",
+      "covers": ["lta_rule_2b", "lta_block_period", "lta_carry_forward", "lta_children_limit"]
+    },
+    {
+      "source_id": "SRC-HOUSE-PROPERTY",
+      "title": "House Property",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/house-property",
+      "source_type": "official_guide",
+      "confidence": "primary",
+      "covers": ["section_24b_interest", "self_occupied_interest_cap", "let_out_interest", "new_regime_loss_setoff_restriction"]
+    },
+    {
+      "source_id": "SRC-SECTION-24",
+      "title": "Section 24 - Deductions from income from house property",
+      "publisher": "Income Tax Department",
+      "url": "https://wmstatic-prd.incometaxindia.gov.in/web/guest/w/section-24-35",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["house_property_deductions"]
+    },
+    {
+      "source_id": "SRC-CAPITAL-GAIN-GUIDE",
+      "title": "Capital Gain",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/capital-gain",
+      "source_type": "official_guide",
+      "confidence": "primary",
+      "covers": ["holding_periods", "section_50aa", "capital_gain_classification"]
+    },
+    {
+      "source_id": "SRC-SECTION-111A",
+      "title": "Section 111A - Tax on short-term capital gains in certain cases",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/section-111a-22",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["111a_pre_2024_07_23_rate", "111a_post_2024_07_23_rate", "basic_exemption_adjustment"]
+    },
+    {
+      "source_id": "SRC-SECTION-112",
+      "title": "Section 112 - Tax on long-term capital gains",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Acts/Income-tax%20Act%2C%201961/2024_2/102120000000086803.htm",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["112_rate", "land_building_grandfathering", "basic_exemption_adjustment"]
+    },
+    {
+      "source_id": "SRC-SECTION-112A",
+      "title": "Section 112A",
+      "publisher": "Income Tax Department",
+      "url": "https://wmstatic-prd.incometaxindia.gov.in/web/guest/w/section-112a-60",
+      "source_type": "act_section",
+      "confidence": "primary_with_note",
+      "covers": ["112a_rate", "112a_threshold", "112a_pre_post_2024_07_23"],
+      "notes": ["Domain review must confirm the executable threshold for pre-23-Jul-2024 transfers in FY 2024-25 because source wording and planning report need reconciliation."]
+    },
+    {
+      "source_id": "SRC-FINANCE-2024-CG",
+      "title": "Finance Bill 2024 capital-gains amendments",
+      "publisher": "Union Budget, Ministry of Finance",
+      "url": "https://www.indiabudget.gov.in/budget2024-25/doc/Finance_Bill.pdf",
+      "source_type": "official_budget_pdf",
+      "confidence": "primary",
+      "covers": ["finance_no_2_2024_capital_gains", "111a", "112", "112a"]
+    },
+    {
+      "source_id": "SRC-SECTION-44AD",
+      "title": "Section 44AD - Presumptive business income",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/section-44ad-31",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["44ad_8_percent", "44ad_6_percent", "44ad_2_crore", "44ad_3_crore", "44ad_5_percent_cash_test"]
+    },
+    {
+      "source_id": "SRC-SECTION-44ADA",
+      "title": "Section 44ADA - Presumptive profession income",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/section-44ada-9",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["44ada_50_percent", "44ada_50_lakh", "44ada_75_lakh", "44ada_5_percent_cash_test"]
+    },
+    {
+      "source_id": "SRC-SECTION-44AE",
+      "title": "Amendment of section 44AE",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Acts/Finance%2520Acts/2018/102120000000071882.htm",
+      "source_type": "finance_act_section",
+      "confidence": "primary",
+      "covers": ["44ae_heavy_goods_vehicle", "44ae_other_goods_vehicle"]
+    },
+    {
+      "source_id": "SRC-44AB-AUDIT",
+      "title": "Due date to file tax audit report under section 44AB",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Documents/Tax-Calendar/Due-date-to-file-tax-audit-report-under-section-44AB.htm",
+      "source_type": "official_guide",
+      "confidence": "primary",
+      "covers": ["44ab_business_threshold", "44ab_profession_threshold", "44ab_10_crore_cash_test"]
+    },
+    {
+      "source_id": "SRC-ITR4-FAQ",
+      "title": "ITR 4",
+      "publisher": "Income Tax Department e-Filing portal",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/all-topics/e-filing-services/itr-4",
+      "source_type": "official_faq",
+      "confidence": "primary",
+      "covers": ["itr_4", "44ad", "44ada", "44ae", "112a_limit_for_itr4"]
+    },
+    {
+      "source_id": "SRC-BUSINESS-AY2026",
+      "title": "Individual having Income from Business / Profession for AY 2026-27",
+      "publisher": "Income Tax Department e-Filing portal",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/individual-business-profession",
+      "source_type": "official_help",
+      "confidence": "primary",
+      "covers": ["itr_3", "itr_4", "business_profession_returns", "regime_option_business_cases"]
+    },
+    {
+      "source_id": "SRC-SECTION-194T",
+      "title": "Insertion of new section 194T",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/section-62-95",
+      "source_type": "finance_act_section",
+      "confidence": "primary",
+      "covers": ["194t_partner_payments", "194t_20000_threshold", "194t_10_percent_rate"]
+    },
+    {
+      "source_id": "SRC-SECTION-234A",
+      "title": "Section 234A - Interest for defaults in furnishing return of income",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Acts/Income-tax%20Act%2C%201961/2025/102120000000091366.htm",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["234a_late_return_interest"]
+    },
+    {
+      "source_id": "SRC-SECTION-234B",
+      "title": "Section 234B - Interest for defaults in payment of advance tax",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Acts/Income-tax%20Act%2C%201961/2025/102120000000091367.htm",
+      "source_type": "act_section",
+      "confidence": "primary",
+      "covers": ["234b_advance_tax_shortfall", "advance_tax_90_percent_rule"]
+    },
+    {
+      "source_id": "SRC-ADVANCE-TAX-DATES",
+      "title": "Payment of Advance Tax",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Documents/Tax-Calendar/Payment-of-Advance-Tax.htm",
+      "source_type": "official_tax_calendar",
+      "confidence": "primary",
+      "covers": ["advance_tax_installments", "44ad_44ada_single_installment", "234b", "234c"]
+    },
+    {
+      "source_id": "SRC-INTEREST-FEES",
+      "title": "Interest and Fees",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/interest-and-fees",
+      "source_type": "official_guide",
+      "confidence": "primary",
+      "covers": ["234a", "234f", "interest_and_fees_summary"]
+    },
+    {
+      "source_id": "SRC-SECTION-234F",
+      "title": "Insertion of new section 234F",
+      "publisher": "Income Tax Department",
+      "url": "https://incometaxindia.gov.in/Acts/Finance%20Acts/2017/102120000000064631.htm",
+      "source_type": "finance_act_section",
+      "confidence": "primary",
+      "covers": ["234f_late_fee"]
+    },
+    {
+      "source_id": "SRC-TAX-RATES-COMPUTATION",
+      "title": "Tax Rates and Computation",
+      "publisher": "Income Tax Department",
+      "url": "https://www.incometaxindia.gov.in/w/tax-rates-and-computation",
+      "source_type": "official_guide",
+      "confidence": "primary",
+      "covers": ["special_tax_rates", "capital_gains_rates", "87a_summary", "115bac"]
+    }
+  ]
+}

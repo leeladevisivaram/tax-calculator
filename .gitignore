@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+node_modules/
+
+testing/output/
+playwright-report/
+test-results/
+
+data/chat-interactions/*.jsonl
+docs/*

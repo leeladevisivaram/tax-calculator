@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>India Income Tax Calculator</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#tax-wizard">Skip to calculator</a>
+
+    <header class="topbar" role="banner">
+      <a class="brand-mark" href="#calculator-heading" aria-label="India Tax Calculator home">
+        <span class="brand-symbol" aria-hidden="true">IT</span>
+        <span>
+          <span class="eyebrow">India Tax Calculator</span>
+          <strong>Explainable tax estimate</strong>
+        </span>
+      </a>
+      <div class="status-panel" aria-live="polite">
+        <span id="api-status" class="status-dot" data-testid="api-status">Checking API</span>
+        <span id="draft-status" data-testid="draft-status">Draft not saved</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero react-entry" aria-labelledby="hero-heading" data-testid="landing-hero">
+        <h1 id="hero-heading" class="sr-only">Choose a tax calculator start path</h1>
+        <div id="react-shell-root" data-testid="react-app-shell">
+          <div class="choice-hub fallback" data-testid="choice-hub">
+            <p class="eyebrow">AY 2026-27 ready</p>
+            <h2>Choose how you want to start</h2>
+            <p>Loading the guided React start experience.</p>
+          </div>
+        </div>
+        <div class="choice-legacy-actions">
+          <button id="application-guide-button" type="button" class="button secondary" data-open-guide data-testid="application-guide-button" aria-haspopup="dialog" aria-controls="usage-guide">Application Guide</button>
+        </div>
+      </section>
+
+      <dialog id="usage-guide" class="guide-dialog" aria-labelledby="usage-guide-heading" data-testid="usage-guide">
+        <div class="usage-guide">
+        <div class="usage-guide-header">
+          <div>
+            <p class="eyebrow">Application guide</p>
+            <h2 id="usage-guide-heading">How to use each part of the calculator</h2>
+          </div>
+          <button id="close-application-guide-button" type="button" class="button secondary guide-close" data-testid="guide-close-button">Close</button>
+          <p>
+            Follow these pages from profile to results. Enter only values that apply to your scenario,
+            use 0 when an amount is not claimed, and review missing-entry messages before running an action.
+          </p>
+        </div>
+
+        <div class="component-guide" id="usage-guide-components" data-testid="guide-components">
+          <div>
+            <span class="badge neutral">Components</span>
+            <h3>What the main areas do</h3>
+          </div>
+          <ul>
+            <li><strong>Stepper</strong> moves between pages such as Profile, Imports, Income, Deductions, Credits, Results, and Readiness.</li>
+            <li><strong>Form cards</strong> collect one group of inputs at a time. Required dropdowns should always keep a selected value.</li>
+            <li><strong>Action bar</strong> runs preview, apply, validate, compute, compare, explain, report, save, and reset actions.</li>
+            <li><strong>Scenario summary</strong> stays beside the form on desktop and shows the selected year, regime, income, and latest payable/refund state.</li>
+            <li><strong>Output panels</strong> show import reviews, validation messages, results, comparisons, reports, privacy notices, and readiness responses.</li>
+          </ul>
+        </div>
+
+        <div class="component-guide" id="usage-guide-user-levels" data-testid="guide-user-levels">
+          <div>
+            <span class="badge neutral">User paths</span>
+            <h3>Choose the path that matches your comfort level</h3>
+          </div>
+          <ul>
+            <li><strong>No tax knowledge</strong>: start with Profile, keep supported defaults where correct, enter Age and regime, then move page by page. Keep unknown amounts as 0 instead of guessing.</li>
+            <li><strong>Beginner</strong>: for a salary case, enter Gross salary in Income, claimed deductions in Deductions, TDS in Credits, then run Validate, Compute, Compare regimes, and Explain.</li>
+            <li><strong>Intermediate</strong>: select all relevant income heads, review deduction availability by regime, use Compare regimes, and read warnings before relying on the result.</li>
+            <li><strong>Advanced</strong>: review the worksheet, computation hash, source register, assumptions, special-rate rows, and JSON report after running Explain.</li>
+            <li><strong>Unavailable features</strong>: automatic AIS prefill, account login, cloud sync, and share links are not active in this local app.</li>
+          </ul>
+        </div>
+
+        <div class="guide-grid" aria-label="Page-by-page use guide">
+          <article id="usage-guide-profile" class="guide-card" data-testid="guide-profile">
+            <span class="badge success">Profile</span>
+            <h3>Taxpayer profile</h3>
+            <p>Choose Period type, Period, Act, Taxpayer type, Residency, Age, Display language, and Preferred regime.</p>
+            <ul>
+              <li>Use Assessment year unless your workflow asks for Tax year.</li>
+              <li>Enter age as a whole number, for example 34, 61, or 81.</li>
+              <li>Use privacy controls here to view policy text, export local data, or delete local data from this browser.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-imports" class="guide-card" data-testid="guide-imports">
+            <span class="badge success">Imports</span>
+            <h3>Import review</h3>
+            <p>Select the import type, upload a CSV, JSON, or searchable Form 16 PDF file, preview it, then confirm before applying values.</p>
+            <ul>
+              <li>Upload supported CSV, JSON, or searchable Form 16 PDF files when available; the app reads extracted values into the review box before preview.</li>
+              <li>Preview import checks pasted data without changing the form.</li>
+              <li>Apply import requires the Import review confirmation checkbox.</li>
+              <li>Unsupported import options appear inactive until integration support exists.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-income" class="guide-card" data-testid="guide-income">
+            <span class="badge success">Income</span>
+            <h3>Income heads</h3>
+            <p>Tick the income heads that apply, then fill the visible cards for salary, house property, other sources, capital gains, or business.</p>
+            <ul>
+              <li>Enter gross salary, HRA, rent, LTA, interest, gain, receipt, or turnover values as annual INR amounts.</li>
+              <li>Use 0 for fields that do not apply instead of leaving selected income-card amounts blank.</li>
+              <li>Use Add asset row and Delete row for capital-gains row management.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-deductions" class="guide-card" data-testid="guide-deductions">
+            <span class="badge success">Deductions</span>
+            <h3>Deductions and exemptions</h3>
+            <p>Keep standard deduction checked when applicable and enter only claimed Chapter VI-A, rent, or housing-loan deduction amounts.</p>
+            <ul>
+              <li>Use 0 for 80C, 80D, 80GG, 80EE, or 80EEA when there is no claim.</li>
+              <li>Tick Parent is senior citizen only when the parent medical premium claim needs senior-citizen treatment.</li>
+              <li>Validation messages explain if a deduction is unavailable for the chosen regime.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-credits" class="guide-card" data-testid="guide-credits">
+            <span class="badge success">Credits</span>
+            <h3>Taxes already paid</h3>
+            <p>Enter TDS, TCS, advance tax, and self-assessment tax amounts already paid or shown in your records.</p>
+            <ul>
+              <li>Use annual INR values from Form 16, AIS, challans, or other records.</li>
+              <li>Enter 0 when a credit category is not available.</li>
+              <li>Negative credit values are not accepted by the form.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-results" class="guide-card" data-testid="guide-results">
+            <span class="badge success">Results</span>
+            <h3>Results and explanation</h3>
+            <p>Run Validate first, then Compute, Compare regimes, and Explain. Report downloads are available after an explanation is generated.</p>
+            <ul>
+              <li>Validate checks required profile fields and visible scenario inputs.</li>
+              <li>Compute updates the result cards and scenario summary.</li>
+              <li>Compare regimes shows old and new regime cards for the same inputs.</li>
+              <li>Explain creates the Generated explanation report required for JSON and HTML report downloads.</li>
+            </ul>
+          </article>
+
+          <article id="usage-guide-readiness" class="guide-card" data-testid="guide-readiness">
+            <span class="badge success">Readiness</span>
+            <h3>Operational readiness</h3>
+            <p>Use readiness actions to view beta-plan, regression, release-readiness, and support responses, then classify feedback when needed.</p>
+            <ul>
+              <li>Choose a category and severity or leave them on Auto when the app should classify the feedback.</li>
+              <li>Enter a clear feedback description before using Classify feedback.</li>
+              <li>Readiness messages are operational guidance and do not change calculator inputs.</li>
+            </ul>
+          </article>
+        </div>
+
+        <details id="usage-guide-errors" class="guide-errors" data-testid="guide-error-messages" open>
+          <summary>What missing-entry messages mean</summary>
+          <div class="error-help-grid">
+            <div class="error-help">
+              <strong>Profile actions</strong>
+              <p>Validate, Compute, Compare regimes, and Explain cannot run when Period type, Period, Act, Taxpayer type, Residency, Age, or Regime is missing. Example: Validate cannot run because Age is missing.</p>
+            </div>
+            <div class="error-help">
+              <strong>Import actions</strong>
+              <p>Preview import needs Import type, Filename, and CSV, JSON, or extracted PDF content. Apply import also needs Import review confirmation. Example: Apply import cannot run because Import review confirmation is missing.</p>
+            </div>
+            <div class="error-help">
+              <strong>Report actions</strong>
+              <p>JSON report and HTML report cannot run until Generated explanation report is available from the Explain action. Example: JSON report cannot run because Generated explanation report is missing.</p>
+            </div>
+            <div class="error-help">
+              <strong>Feedback action</strong>
+              <p>Classify feedback cannot run when Feedback is missing. Enter the issue or observation in the Feedback box first.</p>
+            </div>
+            <div class="error-help">
+              <strong>Amount fields</strong>
+              <p>If the browser says a field must be zero or more, replace the negative value with 0 or a valid positive INR amount.</p>
+            </div>
+            <div class="error-help">
+              <strong>Setup message</strong>
+              <p>Application setup incomplete means a required page element or button is missing from the loaded app shell.</p>
+            </div>
+          </div>
+        </details>
+        </div>
+      </dialog>
+
+      <section class="workspace" aria-labelledby="calculator-heading">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow">Guided calculator</p>
+            <h2 id="calculator-heading">Build your tax scenario</h2>
+          </div>
+          <p>Use the steps in order, or jump to a section when updating an existing scenario.</p>
+        </div>
+
+        <nav class="stepper" aria-label="Calculator sections" data-testid="wizard-stepper">
+          <button class="step-tab active" type="button" data-step="profile" data-testid="step-profile">
+            <span>1</span> Profile
+            <small data-step-health="profile" data-testid="step-health">Needs input</small>
+          </button>
+          <button class="step-tab" type="button" data-step="imports" data-testid="step-imports">
+            <span>2</span> Imports
+            <small data-step-health="imports" data-testid="step-health">Complete</small>
+          </button>
+          <button class="step-tab" type="button" data-step="income" data-testid="step-income">
+            <span>3</span> Income
+            <small data-step-health="income" data-testid="step-health">Needs input</small>
+          </button>
+          <button class="step-tab" type="button" data-step="deductions" data-testid="step-deductions">
+            <span>4</span> Deductions
+            <small data-step-health="deductions" data-testid="step-health">Complete</small>
+          </button>
+          <button class="step-tab" type="button" data-step="credits" data-testid="step-credits">
+            <span>5</span> Credits
+            <small data-step-health="credits" data-testid="step-health">Complete</small>
+          </button>
+          <button class="step-tab" type="button" data-step="results" data-testid="step-results">
+            <span>6</span> Results
+            <small data-step-health="results" data-testid="step-health">Ready to compute</small>
+          </button>
+          <button class="step-tab" type="button" data-step="launch" data-testid="step-launch">
+            <span>7</span> Readiness
+            <small data-step-health="launch" data-testid="step-health">Complete</small>
+          </button>
+        </nav>
+
+        <div class="calculator-layout">
+          <form id="tax-wizard" class="wizard" autocomplete="off" data-testid="tax-wizard" tabindex="-1">
+            <section class="step-panel active" data-panel="profile" data-testid="panel-profile" aria-labelledby="profile-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 1</span>
+                <h2 id="profile-heading">Taxpayer profile</h2>
+                <p>Assessment period, law, taxpayer type, residence, age, and regime decide which rulepack is used.</p>
+              </div>
+
+              <div class="field-grid">
+                <label>
+                  <span>Period type</span>
+                  <select name="period_type" data-testid="period-type">
+                    <option value="assessment_year">Assessment year</option>
+                    <option value="tax_year">Tax year</option>
+                  </select>
+                  <small>Most Indian filings are reviewed by assessment year.</small>
+                </label>
+                <label>
+                  <span>Period</span>
+                  <select name="period" data-testid="period-select">
+                    <option value="2026-27">2026-27</option>
+                    <option value="2025-26">2025-26</option>
+                  </select>
+                  <small>Choose the year shown on your filing workflow.</small>
+                </label>
+                <label>
+                  <span>Act</span>
+                  <select name="act" data-testid="act-select">
+                    <option value="Income-tax Act, 1961">Income-tax Act, 1961</option>
+                    <option value="Income-tax Act, 2025">Income-tax Act, 2025</option>
+                  </select>
+                  <small>Unsupported act/year mixes are blocked by validation.</small>
+                </label>
+                <label>
+                  <span>Taxpayer type</span>
+                  <select name="taxpayer_type" data-testid="taxpayer-type">
+                    <option value="individual">Individual</option>
+                    <option value="huf">HUF</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Residency</span>
+                  <select name="residency" data-testid="residency-select">
+                    <option value="resident">Resident</option>
+                    <option value="non_resident">Non-resident</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Age</span>
+                  <input name="age_years" type="number" min="0" step="1" value="34" inputmode="numeric" data-testid="age-input">
+                </label>
+                <label>
+                  <span>Display language</span>
+                  <select name="language" data-testid="language-select">
+                    <option value="en-IN">English</option>
+                    <option value="hi-IN">Hindi fallback</option>
+                  </select>
+                  <small>Labels stay in English until reviewed translations are available.</small>
+                </label>
+              </div>
+
+              <fieldset class="segmented regime-toggle" data-testid="regime-toggle">
+                <legend>Preferred regime</legend>
+                <label><input type="radio" name="regime" value="new" checked> New regime</label>
+                <label><input type="radio" name="regime" value="old"> Old regime</label>
+              </fieldset>
+
+              <div class="alert info" role="note">
+                <strong>Tip</strong>
+                <span>Use the compare action in Results to see which regime has lower net liability for the same inputs.</span>
+              </div>
+
+              <div class="privacy-panel card" aria-labelledby="privacy-heading">
+                <div>
+                  <span class="badge neutral">Privacy controls</span>
+                  <h2 id="privacy-heading">Local data and consent</h2>
+                  <p>Export or delete browser-held draft, import, and report state from this device.</p>
+                </div>
+                <label class="checkbox-line">
+                  <input name="privacy_notice_ack" type="checkbox" data-testid="privacy-ack">
+                  <span>I understand imported values are previews until I apply them, and local drafts stay on this device until deleted.</span>
+                </label>
+                <div class="button-row" aria-label="Privacy actions">
+                  <button id="load-privacy-button" type="button" class="button secondary" data-testid="privacy-policy-button">Privacy policy</button>
+                  <button id="export-local-data-button" type="button" class="button secondary" data-testid="export-local-data-button">Export local data</button>
+                  <button id="delete-local-data-button" type="button" class="button danger" data-testid="delete-local-data-button">Delete local data</button>
+                </div>
+                <div id="privacy-output" class="notice-list" role="status" aria-live="polite" data-testid="privacy-output"></div>
+              </div>
+            </section>
+
+            <section class="step-panel" data-panel="imports" data-testid="panel-imports" aria-labelledby="imports-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 2</span>
+                <h2 id="imports-heading">Import review</h2>
+                <p>Preview imported values and apply them only after review confirmation. Unsupported channels stay inactive until a backend integration exists.</p>
+              </div>
+
+              <div class="start-options" aria-label="Import options">
+                <button type="button" class="start-option active" data-jump-step="imports" data-testid="manual-import-card">
+                  <span class="badge success">Supported</span>
+                  <strong>CSV, JSON, or PDF preview</strong>
+                  <small>Review Form 16 PDF values, deductions, interest, or gains data.</small>
+                </button>
+                <button type="button" class="start-option" disabled aria-disabled="true" data-testid="prefill-import-card">
+                  <span class="badge neutral">Planned</span>
+                  <strong>AIS or prefill connection</strong>
+                  <small>Shown for roadmap clarity; not active in this build.</small>
+                </button>
+              </div>
+
+              <div class="split">
+                <fieldset class="card">
+                  <legend>Import file</legend>
+                  <label>
+                    <span>Import type</span>
+                    <select name="import_type" data-testid="import-type">
+                      <option value="form16">Form 16 summary</option>
+                      <option value="interest_dividend">Interest and dividend income</option>
+                      <option value="deductions">Investment and deductions</option>
+                      <option value="capital_gains">Capital-gains schedule</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Upload CSV, JSON, or searchable PDF file</span>
+                    <input name="import_file" type="file" accept=".csv,.json,.pdf,text/csv,application/json,application/pdf" data-testid="import-file">
+                    <small id="import-file-status" role="status" aria-live="polite" data-testid="import-file-status">No file selected. You can also paste content below.</small>
+                  </label>
+                  <label><span>Filename</span><input name="import_filename" type="text" value="form16.csv" data-testid="import-filename"></label>
+                  <label>
+                    <span>CSV, JSON, or extracted PDF content</span>
+                    <textarea name="import_content" rows="8" data-testid="import-content">gross_salary,tds,deduction_80c,employer_name
+900000,45000,150000,Example Employer</textarea>
+                    <small>Preview does not update the calculator until you review and apply.</small>
+                  </label>
+                  <label class="checkbox-line"><input name="import_confirmed" type="checkbox" data-testid="import-confirmed"> <span>I reviewed these imported values</span></label>
+                  <label class="checkbox-line"><input name="import_reject_credits" type="checkbox" data-testid="import-reject-credits"> <span>Do not apply tax-credit values from this import</span></label>
+                </fieldset>
+
+                <div id="import-output" class="import-panel empty-state" aria-live="polite" data-testid="import-output">
+                  <strong>No import preview yet</strong>
+                  <p>Choose an import type, paste data, then preview the proposed values.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="step-panel" data-panel="income" data-testid="panel-income" aria-labelledby="income-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 3</span>
+                <h2 id="income-heading">Income heads</h2>
+                <p>Select only the income heads you need. Disabled heads are excluded from the request payload.</p>
+              </div>
+
+              <fieldset class="income-heads" data-testid="income-head-selection">
+                <legend>Income-head selection</legend>
+                <label class="choice-card"><input name="income_head_salary" type="checkbox" checked data-income-toggle="salary"> <span><strong>Salary</strong><small>Gross salary, HRA, LTA</small></span></label>
+                <label class="choice-card"><input name="income_head_house" type="checkbox" data-income-toggle="house"> <span><strong>House property</strong><small>Self-occupied or let-out loss</small></span></label>
+                <label class="choice-card"><input name="income_head_other_sources" type="checkbox" data-income-toggle="other_sources"> <span><strong>Other sources</strong><small>Interest and similar income</small></span></label>
+                <label class="choice-card"><input name="income_head_capital_gains" type="checkbox" data-income-toggle="capital_gains"> <span><strong>Capital gains</strong><small>111A, 112A, 112, 50AA</small></span></label>
+                <label class="choice-card"><input name="income_head_business" type="checkbox" data-income-toggle="business"> <span><strong>Business</strong><small>Normal, 44AD, 44ADA</small></span></label>
+              </fieldset>
+
+              <div class="split">
+                <fieldset class="card" data-income-section="salary">
+                  <legend>Salary and allowances</legend>
+                  <label><span>Gross salary</span><input name="gross_salary" type="number" min="0" step="1000" value="1275000" inputmode="numeric" data-testid="gross-salary"></label>
+                  <label><span>Basic salary for HRA</span><input name="basic_salary" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label><span>HRA received</span><input name="hra_received" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label><span>Annual rent paid</span><input name="rent_paid" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label class="checkbox-line"><input name="metro_city" type="checkbox"> <span>Metro city</span></label>
+                  <label><span>LTA received</span><input name="lta_received" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label><span>LTA claim</span><input name="lta_claim" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label><span>LTA journeys already claimed</span><input name="lta_journeys" type="number" min="0" step="1" value="0" inputmode="numeric"></label>
+                </fieldset>
+
+                <fieldset class="card" data-income-section="house">
+                  <legend>House property</legend>
+                  <label><span>Self-occupied interest</span><input name="self_occupied_interest" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label><span>Let-out computed loss</span><input name="let_out_loss" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <div class="helper-box">Validation checks old-regime restrictions and supported loss handling before compute.</div>
+                </fieldset>
+              </div>
+
+              <div class="split">
+                <fieldset class="card" data-income-section="other_sources">
+                  <legend>Other sources</legend>
+                  <label><span>Interest income</span><input name="interest_income" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                </fieldset>
+
+                <fieldset class="card" data-income-section="capital_gains">
+                  <legend>Capital gains</legend>
+                  <div class="button-row compact-row" aria-label="Capital-gains row actions">
+                    <button id="add-capital-gain-button" type="button" class="button secondary" data-testid="add-capital-gain-button">Add asset row</button>
+                    <button id="delete-capital-gain-button" type="button" class="button danger" data-testid="delete-capital-gain-button">Delete row</button>
+                  </div>
+                  <div id="capital-gain-row-status" class="helper-box" role="status" aria-live="polite" data-testid="capital-gain-row-status">One reviewed asset row is available.</div>
+                  <label>
+                    <span>Section</span>
+                    <select name="capital_gain_section">
+                      <option value="">None</option>
+                      <option value="111A">111A short-term STT</option>
+                      <option value="112A">112A equity long-term</option>
+                      <option value="112">112 long-term</option>
+                      <option value="50AA">50AA specified asset</option>
+                    </select>
+                  </label>
+                  <label><span>Transfer date</span><input name="capital_gain_transfer_date" type="date" value="2025-08-15"></label>
+                  <label><span>Net gain</span><input name="capital_gain_net_gain" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label class="checkbox-line"><input name="capital_gain_stt_paid" type="checkbox" checked> <span>STT paid</span></label>
+                </fieldset>
+              </div>
+
+              <fieldset class="card" data-income-section="business">
+                <legend>Business or profession</legend>
+                <div class="field-grid">
+                  <label>
+                    <span>Business type</span>
+                    <select name="business_section">
+                      <option value="">None</option>
+                      <option value="normal_business">Normal business</option>
+                      <option value="44AD">44AD presumptive business</option>
+                      <option value="44ADA">44ADA presumptive profession</option>
+                    </select>
+                  </label>
+                  <label data-business-field="normal"><span>Net income</span><input name="business_net_income" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label data-business-field="presumptive"><span>Turnover / gross receipts</span><input name="business_receipts" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label data-business-field="presumptive"><span>Cash receipts</span><input name="business_cash_receipts" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                  <label data-business-field="44AD"><span>Digital receipts</span><input name="business_digital_receipts" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                </div>
+                <div id="business-mode-hint" class="helper-box" role="status" aria-live="polite" data-testid="business-mode-hint">Select a business type to show only relevant fields.</div>
+              </fieldset>
+            </section>
+
+            <section class="step-panel" data-panel="deductions" data-testid="panel-deductions" aria-labelledby="deductions-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 4</span>
+                <h2 id="deductions-heading">Deductions and exemptions</h2>
+                <p>New-regime restrictions are surfaced by validation before calculation.</p>
+              </div>
+
+              <label class="checkbox-line card-inline"><input name="standard_deduction" type="checkbox" checked> <span>Apply standard deduction where allowed</span></label>
+              <div class="field-grid">
+                <label><span>80C family bucket</span><input name="deduction_80c" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>80D self/family premium</span><input name="deduction_80d_self_premium" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>80D self preventive</span><input name="deduction_80d_self_preventive" type="number" min="0" step="500" value="0" inputmode="numeric"></label>
+                <label><span>80D parent premium</span><input name="deduction_80d_parent_premium" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>80D parent preventive</span><input name="deduction_80d_parent_preventive" type="number" min="0" step="500" value="0" inputmode="numeric"></label>
+                <label class="checkbox-line"><input name="deduction_80d_parent_senior" type="checkbox"> <span>Parent is senior citizen</span></label>
+                <label><span>80GG rent paid</span><input name="deduction_80gg_rent" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>80EE claim</span><input name="deduction_80ee" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>80EEA claim</span><input name="deduction_80eea" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+              </div>
+            </section>
+
+            <section class="step-panel" data-panel="credits" data-testid="panel-credits" aria-labelledby="credits-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 5</span>
+                <h2 id="credits-heading">Taxes already paid</h2>
+                <p>Credits reduce payable tax after tax, surcharge, and cess are computed.</p>
+              </div>
+
+              <div class="field-grid">
+                <label><span>TDS</span><input name="tds" type="number" min="0" step="1000" value="0" inputmode="numeric" data-testid="tds-input"></label>
+                <label><span>TCS</span><input name="tcs" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>Advance tax</span><input name="advance_tax" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+                <label><span>Self-assessment tax</span><input name="self_assessment_tax" type="number" min="0" step="1000" value="0" inputmode="numeric"></label>
+              </div>
+            </section>
+
+            <section class="step-panel" data-panel="results" data-testid="panel-results" aria-labelledby="results-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 6</span>
+                <h2 id="results-heading">Results and explanation</h2>
+                <p>Validate first, then compute, compare regimes, and generate an explainable report.</p>
+              </div>
+
+              <div id="result-explain-summary" class="result-explain-summary empty-state" data-testid="result-explain-summary" aria-live="polite">
+                <strong>Result summary will appear after compute</strong>
+                <p>Compute first, then compare regimes and explain to build confidence in the estimate.</p>
+              </div>
+              <div id="ai-review-center" class="ai-review-center empty-state" data-testid="ai-review-center" aria-live="polite">
+                <strong>AI Review Center</strong>
+                <p>Run Validate or Compute to review missing fields, confidence, and next actions.</p>
+              </div>
+              <div id="tax-waterfall" class="tax-waterfall empty-state" data-testid="tax-waterfall" aria-live="polite">
+                <strong>Tax waterfall</strong>
+                <p>The visual tax build-up appears after a successful compute.</p>
+              </div>
+              <div id="validation-output" class="notice-list" role="status" aria-live="polite" data-testid="validation-output"></div>
+              <div id="result-output" class="results-grid" aria-live="polite" data-testid="result-output"></div>
+              <div id="comparison-output" class="comparison" aria-live="polite" data-testid="comparison-output"></div>
+              <div id="report-output" class="report-panel" aria-live="polite" data-testid="report-output"></div>
+            </section>
+
+            <section class="step-panel" data-panel="launch" data-testid="panel-launch" aria-labelledby="launch-heading">
+              <div class="section-heading">
+                <span class="section-kicker">Step 7</span>
+                <h2 id="launch-heading">Operational readiness</h2>
+                <p>Closed beta, regression, support, and go/no-go gates for the supported v1 scope.</p>
+              </div>
+
+              <div class="split">
+                <fieldset class="card">
+                  <legend>Release gates</legend>
+                  <div class="button-row" aria-label="Launch readiness actions">
+                    <button id="load-beta-plan-button" type="button" class="button secondary" data-testid="beta-plan-button">Beta plan</button>
+                    <button id="run-regression-button" type="button" class="button secondary" data-testid="run-regression-button">Run regression</button>
+                    <button id="check-readiness-button" type="button" class="button primary" data-testid="readiness-button">Readiness</button>
+                    <button id="load-legal-support-button" type="button" class="button secondary" data-testid="support-sop-button">Support SOP</button>
+                  </div>
+                </fieldset>
+
+                <fieldset class="card">
+                  <legend>Beta defect triage</legend>
+                  <label>
+                    <span>Category</span>
+                    <select name="feedback_category">
+                      <option value="">Auto-classify</option>
+                      <option value="calculation">Calculation</option>
+                      <option value="validation">Validation</option>
+                      <option value="ux">UX</option>
+                      <option value="source_evidence">Source evidence</option>
+                      <option value="import">Import</option>
+                      <option value="content">Content</option>
+                      <option value="security">Security</option>
+                      <option value="privacy">Privacy</option>
+                      <option value="accessibility">Accessibility</option>
+                      <option value="operations">Operations</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Severity</span>
+                    <select name="feedback_severity">
+                      <option value="">Auto</option>
+                      <option value="critical">Critical</option>
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Feedback</span>
+                    <textarea name="feedback_description" rows="5" data-testid="feedback-description">Tax amount looks wrong for the 112A scenario after date split.</textarea>
+                  </label>
+                  <button id="classify-feedback-button" type="button" class="button secondary" data-testid="classify-feedback-button">Classify feedback</button>
+                </fieldset>
+              </div>
+
+              <div id="launch-output" class="launch-panel" role="status" aria-live="polite" data-testid="launch-output"></div>
+            </section>
+
+          </form>
+
+          <aside id="side-rail" class="side-rail" aria-label="Scenario actions and summary" data-testid="side-rail">
+            <div class="action-bar" aria-label="Wizard actions" data-testid="action-bar">
+                <div id="next-action-hint" class="next-action-hint" data-testid="next-action-hint">Start with Profile or choose a start path.</div>
+                <div id="guided-checklist" class="guided-checklist" data-testid="guided-checklist" aria-live="polite">
+                  <strong>Guided checklist</strong>
+                  <ul>
+                    <li>Choose a start path to focus the calculator.</li>
+                    <li>Complete Profile and Income before computing.</li>
+                    <li>Use Compare regimes and Explain to review the result.</li>
+                  </ul>
+                </div>
+                <div class="action-command-row" data-testid="action-command-row">
+                <div class="action-group action-group-primary" data-action-group="navigation" data-testid="action-group-navigation">
+                  <button id="prev-step" type="button" class="button secondary" data-testid="prev-step">Back</button>
+                  <button id="next-step" type="button" class="button secondary" data-testid="next-step">Next</button>
+                </div>
+
+                <details class="action-menu" data-action-group="import" data-testid="action-group-import">
+                  <summary>Import</summary>
+                  <div class="action-menu-panel">
+                    <button id="preview-import-button" type="button" class="button secondary" data-testid="preview-import-button">Preview</button>
+                    <button id="apply-import-button" type="button" class="button secondary" data-testid="apply-import-button">Apply</button>
+                  </div>
+                </details>
+
+                <details class="action-menu" data-action-group="calculate" data-testid="action-group-calculate">
+                  <summary>Calculate</summary>
+                  <div class="action-menu-panel">
+                    <button id="validate-button" type="button" class="button primary" data-testid="validate-button">Validate</button>
+                    <button id="compute-button" type="button" class="button primary" data-testid="compute-button">Compute</button>
+                    <button id="ai-review-button" type="button" class="button secondary" data-testid="ai-review-button">AI Review</button>
+                  </div>
+                </details>
+
+                <details class="action-menu" data-action-group="review" data-testid="action-group-review">
+                  <summary>Review</summary>
+                  <div class="action-menu-panel">
+                    <button id="compare-button" type="button" class="button secondary" data-testid="compare-button">Compare</button>
+                    <button id="explain-button" type="button" class="button secondary" data-testid="explain-button">Explain</button>
+                    <button id="download-json-button" type="button" class="button secondary" data-testid="download-json-button">JSON</button>
+                    <button id="download-html-button" type="button" class="button secondary" data-testid="download-html-button">HTML</button>
+                  </div>
+                </details>
+
+                <details class="action-menu" data-action-group="draft" data-testid="action-group-draft">
+                  <summary>More</summary>
+                  <div class="action-menu-panel">
+                    <button id="application-guide-side-button" type="button" class="button secondary" data-open-guide data-testid="application-guide-side-button" aria-haspopup="dialog" aria-controls="usage-guide">Guide</button>
+                    <button id="save-button" type="button" class="button secondary" data-testid="save-button">Save</button>
+                    <button id="reset-button" type="button" class="button danger" data-testid="reset-button">Reset</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+
+          <section class="summary-rail" aria-labelledby="summary-heading" data-testid="sticky-summary">
+            <span id="summary-confidence" class="badge success" data-testid="summary-confidence">Calculation confidence: high</span>
+            <h2 id="summary-heading">Scenario summary</h2>
+            <dl>
+              <div>
+                <dt>Period</dt>
+                <dd id="summary-period">AY 2026-27</dd>
+              </div>
+              <div>
+                <dt>Regime</dt>
+                <dd id="summary-regime">New regime</dd>
+              </div>
+              <div>
+                <dt>Gross salary</dt>
+                <dd id="summary-income">INR 12.75L</dd>
+              </div>
+              <div>
+                <dt>Payable / refund</dt>
+                <dd id="summary-payable">Run compute</dd>
+              </div>
+            </dl>
+            <div class="summary-note" id="summary-note">Rules last updated for the selected supported period.</div>
+            <div class="summary-health" data-testid="step-health">
+              <span>Current step</span>
+              <strong id="summary-step-health">Needs input</strong>
+            </div>
+          </section>
+
+          <section class="scenario-panel" aria-labelledby="scenario-heading" data-testid="scenario-panel">
+            <span class="badge neutral">What-if scenarios</span>
+            <h2 id="scenario-heading">Local scenario compare</h2>
+            <p>Save the current inputs, adjust values, then compare the saved case against the current case.</p>
+            <div class="button-row">
+              <button id="scenario-save-button" type="button" class="button secondary" data-testid="scenario-save">Save scenario</button>
+              <button id="scenario-duplicate-button" type="button" class="button secondary" data-testid="scenario-duplicate">Duplicate latest</button>
+              <button id="scenario-compare-button" type="button" class="button primary" data-testid="scenario-compare">Compare what-if</button>
+            </div>
+            <div id="scenario-output" class="scenario-output" data-testid="scenario-output" aria-live="polite">No saved scenarios yet.</div>
+          </section>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <section class="chatbot-widget" aria-label="Application assistant">
+      <button id="chatbot-toggle-button" type="button" class="chatbot-toggle" data-testid="chatbot-toggle-button" aria-controls="chatbot-panel" aria-expanded="false">
+        <span aria-hidden="true">?</span>
+        <span>Chat</span>
+      </button>
+
+      <div id="chatbot-panel" class="chatbot-panel is-hidden" role="dialog" aria-labelledby="chatbot-heading" data-testid="chatbot-panel">
+        <div class="chatbot-copilot-frame" data-testid="chatbot-copilot-panel">
+        <div class="chatbot-header">
+          <div>
+            <p class="eyebrow">Application assistant</p>
+            <h2 id="chatbot-heading">Calculator help</h2>
+          </div>
+          <button id="chatbot-close-button" type="button" class="button secondary" data-testid="chatbot-close-button">Close</button>
+        </div>
+
+        <div id="chatbot-messages" class="chatbot-messages" role="log" aria-live="polite" data-testid="chatbot-messages">
+          <div class="chat-message assistant">
+            <strong>Assistant</strong>
+            <p>I can help you use this calculator, explain missing-entry messages, and fill supported fields.</p>
+          </div>
+        </div>
+
+        <div class="chatbot-prompts" aria-label="Quick prompts">
+          <button type="button" class="button secondary" data-chatbot-prompt="I do not know tax where should I start?" data-testid="chatbot-prompt-start">Start guide</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="Where do I enter TDS?" data-testid="chatbot-prompt-tds">TDS help</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="Set gross salary to 900000" data-testid="chatbot-prompt-salary">Set salary</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="I know my income and deductions how should I compare regimes?" data-testid="chatbot-prompt-compare">Compare help</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="Can I upload a PDF Form 16?" data-testid="chatbot-prompt-unavailable">PDF import</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="Why is Age missing?" data-testid="chatbot-prompt-error">Age error</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="What should I do on this step?" data-testid="chatbot-prompt-active">Current step</button>
+          <button type="button" class="button secondary" data-chatbot-prompt="Explain my result summary" data-testid="chatbot-prompt-result">Explain result</button>
+        </div>
+        <div id="copilot-context-prompts" class="copilot-context-prompts" aria-label="AI review quick prompts"></div>
+
+        <p id="chatbot-ai-status" class="chatbot-ai-status" data-testid="chatbot-ai-status">AI assist is matching app help content.</p>
+
+        <form id="chatbot-form" class="chatbot-form" data-testid="chatbot-form">
+          <label>
+            <span class="sr-only">Ask the application assistant</span>
+            <input id="chatbot-input" name="chatbot_message" type="text" autocomplete="off" placeholder="Ask about this calculator..." data-testid="chatbot-input">
+          </label>
+          <button id="chatbot-send-button" type="submit" class="button primary" data-testid="chatbot-send-button">Send</button>
+        </form>
+
+        <div id="chatbot-action-preview" class="chatbot-action-preview" aria-live="polite" data-testid="chatbot-action-preview"></div>
+        </div>
+      </div>
+    </section>
+
+    <script src="/react/react-app.js" type="module"></script>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

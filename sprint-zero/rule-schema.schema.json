@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tax-calculator.local/schemas/rulepack.schema.json",
+  "title": "India Tax Calculator Rulepack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rulepack_id",
+    "period_type",
+    "period",
+    "act",
+    "status",
+    "currency",
+    "rounding",
+    "source_register_version",
+    "rules"
+  ],
+  "properties": {
+    "rulepack_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+      "examples": ["ay-2026-27-v1"]
+    },
+    "period_type": {
+      "type": "string",
+      "enum": ["assessment_year", "tax_year"]
+    },
+    "period": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}$",
+      "examples": ["2026-27"]
+    },
+    "act": {
+      "type": "string",
+      "enum": ["Income-tax Act, 1961", "Income-tax Act, 2025"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "deprecated", "rollback"]
+    },
+    "currency": {
+      "type": "string",
+      "const": "INR"
+    },
+    "rounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["internal_precision", "display_precision", "final_tax_rounding"],
+      "properties": {
+        "internal_precision": {
+          "type": "string",
+          "enum": ["paise"]
+        },
+        "display_precision": {
+          "type": "string",
+          "enum": ["rupee"]
+        },
+        "final_tax_rounding": {
+          "type": "string",
+          "enum": ["nearest_rupee", "nearest_ten_rupees", "none"]
+        }
+      }
+    },
+    "source_register_version": {
+      "type": "string",
+      "pattern": "^src-[0-9]{4}-[0-9]{2}-[0-9]{2}-v[0-9]+$"
+    },
+    "effective_from": {
+      "$ref": "#/$defs/date"
+    },
+    "effective_to": {
+      "$ref": "#/$defs/date"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "money": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Whole rupees unless the rule explicitly states otherwise."
+    },
+    "decimal": {
+      "type": "number",
+      "minimum": 0
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^SRC-[A-Z0-9-]+$"
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "rule_type",
+        "status",
+        "applies_to",
+        "calculation",
+        "sources"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+        },
+        "rule_type": {
+          "type": "string",
+          "enum": [
+            "slab",
+            "rebate",
+            "surcharge",
+            "cess",
+            "standard_deduction",
+            "exemption",
+            "deduction",
+            "capital_gain_rate",
+            "capital_gain_classification",
+            "presumptive_income",
+            "tds_threshold",
+            "tax_credit",
+            "interest",
+            "late_fee",
+            "itr_eligibility",
+            "validation"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "approved", "active", "deprecated", "excluded_v1"]
+        },
+        "effective_from": {
+          "$ref": "#/$defs/date"
+        },
+        "effective_to": {
+          "$ref": "#/$defs/date"
+        },
+        "applies_to": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "periods": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "taxpayer_type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["individual", "huf", "firm", "aop", "boi", "ajp"]
+              }
+            },
+            "residency": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["resident", "resident_not_ordinary", "non_resident", "any"]
+              }
+            },
+            "age_band": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["ordinary", "senior", "super_senior", "not_applicable", "any"]
+              }
+            },
+            "regime": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["old", "new", "not_applicable", "any"]
+              }
+            },
+            "income_head": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "salary",
+                  "house_property",
+                  "business_profession",
+                  "capital_gains",
+                  "other_sources",
+                  "normal_income",
+                  "tax_credit",
+                  "not_applicable"
+                ]
+              }
+            },
+            "special_rate_code": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["111A", "112", "112A", "50AA", "115BAC", "not_applicable"]
+              }
+            }
+          }
+        },
+        "calculation": {
+          "type": "object",
+          "description": "Rule-specific calculation payload. Must be validated by rule_type-specific schemas before activation."
+        },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "severity": {
+              "type": "string",
+              "enum": ["hard_blocker", "warning", "info"]
+            },
+            "message_key": {
+              "type": "string"
+            },
+            "field_paths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/source_id"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domain_review_required": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}
+
