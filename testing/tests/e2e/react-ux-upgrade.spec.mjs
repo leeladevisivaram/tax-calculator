@@ -86,7 +86,7 @@ test.describe("Feature: React UX upgrade", () => {
     expect(chatbotCalls).toBeGreaterThanOrEqual(1);
   });
 
-  test("classifies calculator actions into a bottom dock with step-aware dropdown groups", async ({ page }) => {
+  test("keeps calculator actions in a bottom bar without hiding form content", async ({ page }) => {
     await openCalculator(page);
 
     await expect(page.getByTestId("action-bar")).toBeVisible();
@@ -99,8 +99,24 @@ test.describe("Feature: React UX upgrade", () => {
     await expect(page.getByTestId("validate-button")).toBeHidden();
     await expect(page.getByTestId("save-button")).toBeHidden();
 
-    const dockPosition = await page.getByTestId("action-bar").evaluate((node) => getComputedStyle(node).position);
-    expect(dockPosition).toBe("fixed");
+    const actionBarLayout = await page.getByTestId("action-bar").evaluate((node) => {
+      return {
+        position: getComputedStyle(node).position,
+        checklistInside: Boolean(node.querySelector("#guided-checklist"))
+      };
+    });
+    expect(actionBarLayout.position).toBe("fixed");
+    expect(actionBarLayout.checklistInside).toBe(false);
+
+    const bottomSpacing = await page.getByTestId("action-bar").evaluate((node) => {
+      const actionRect = node.getBoundingClientRect();
+      const bodyPaddingBottom = Number.parseFloat(getComputedStyle(document.body).paddingBottom);
+      return {
+        actionHeight: actionRect.height,
+        bodyPaddingBottom
+      };
+    });
+    expect(bottomSpacing.bodyPaddingBottom).toBeGreaterThanOrEqual(bottomSpacing.actionHeight + 16);
 
     await page.getByTestId("action-group-calculate").locator("summary").click();
     await expect(page.getByTestId("validate-button")).toBeVisible();
@@ -108,12 +124,14 @@ test.describe("Feature: React UX upgrade", () => {
     await expect(page.getByTestId("save-button")).toBeVisible();
 
     await goToStep(page, "imports");
+    await expect(page.getByTestId("action-bar")).toBeVisible();
     await expect(page.getByTestId("action-group-import")).toBeVisible();
     await expect(page.getByTestId("preview-import-button")).toBeHidden();
     await page.getByTestId("action-group-import").locator("summary").click();
     await expect(page.getByTestId("preview-import-button")).toBeVisible();
 
     await goToStep(page, "results");
+    await expect(page.getByTestId("action-bar")).toBeVisible();
     await expect(page.getByTestId("action-group-review")).toBeVisible();
   });
 
@@ -135,7 +153,7 @@ test.describe("Feature: React UX upgrade", () => {
     await expect(page.getByTestId("validate-button")).toBeHidden();
   });
 
-  test("keeps mobile action dropdowns inside the viewport without horizontal overflow", async ({ page }) => {
+  test("keeps mobile action panels inside the viewport without horizontal overflow", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 820 });
     await openCalculator(page);
 

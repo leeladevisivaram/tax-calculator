@@ -34,8 +34,9 @@ export async function goToStep(page, step) {
   const tab = page.getByTestId(`step-${step}`);
   const panel = page.getByTestId(`panel-${step}`);
   await expect(tab).toBeAttached();
-  await tab.dispatchEvent("click");
-  await expect(page.getByTestId(`panel-${step}`)).toBeVisible();
+  await tab.scrollIntoViewIfNeeded();
+  await tab.click();
+  await expect(panel).toBeVisible();
 }
 
 export async function setScenarioField(page, name, value) {
@@ -121,6 +122,7 @@ export async function runValidate(page) {
 export async function runCompute(page) {
   await clickAction(page, "compute-button");
   await expect(page.getByTestId("result-output")).toContainText("Payable / refund");
+  await expect(page.getByTestId("compute-button")).toHaveAttribute("aria-busy", "false");
 }
 
 export async function runCompare(page) {

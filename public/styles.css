@@ -444,7 +444,7 @@ body[data-active-tab="guide"] .guide-close {
 }
 
 body[data-active-tab="calculator"] {
-  padding-bottom: 124px;
+  padding-bottom: 132px;
 }
 
 body[data-active-tab="calculator"] .chatbot-widget {
@@ -1754,6 +1754,13 @@ textarea {
   display: flex;
   align-items: stretch;
   gap: var(--space-2);
+  min-width: 0;
+  width: auto;
+}
+
+.action-group-primary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .action-menu[hidden] {
@@ -1762,6 +1769,7 @@ textarea {
 
 .action-menu {
   position: relative;
+  display: block;
 }
 
 .action-menu[open] {
@@ -1770,6 +1778,7 @@ textarea {
 
 .action-menu summary {
   display: inline-flex;
+  width: 100%;
   min-height: 40px;
   align-items: center;
   justify-content: center;
@@ -1795,6 +1804,14 @@ textarea {
 
 .action-menu[open] summary::after {
   content: "⌃";
+}
+
+.action-menu summary::after {
+  content: "v";
+}
+
+.action-menu[open] summary::after {
+  content: "^";
 }
 
 .action-menu-panel {
@@ -2079,7 +2096,7 @@ textarea {
   }
 
   .action-command-row {
-    justify-content: flex-start;
+    justify-content: stretch;
   }
 
   .income-heads {
@@ -2211,7 +2228,7 @@ textarea {
     right: 10px;
     bottom: 10px;
     left: 10px;
-    max-height: 45dvh;
+    max-height: 52dvh;
     overflow: auto;
   }
 
@@ -2226,13 +2243,21 @@ textarea {
     width: 100%;
   }
 
+  .action-menu-panel {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    margin-top: var(--space-2);
+  }
+
   body[data-active-tab="calculator"] {
-    padding-bottom: 220px;
+    padding-bottom: 260px;
   }
 
   body[data-active-tab="calculator"] .chatbot-widget {
     left: auto;
-    bottom: max(72px, calc(45dvh - 56px));
+    right: 10px;
+    bottom: 228px;
     justify-items: end;
   }
 

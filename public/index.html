@@ -590,14 +590,6 @@
           <aside id="side-rail" class="side-rail" aria-label="Scenario actions and summary" data-testid="side-rail">
             <div class="action-bar" aria-label="Wizard actions" data-testid="action-bar">
                 <div id="next-action-hint" class="next-action-hint" data-testid="next-action-hint">Start with Profile or choose a start path.</div>
-                <div id="guided-checklist" class="guided-checklist" data-testid="guided-checklist" aria-live="polite">
-                  <strong>Guided checklist</strong>
-                  <ul>
-                    <li>Choose a start path to focus the calculator.</li>
-                    <li>Complete Profile and Income before computing.</li>
-                    <li>Use Compare regimes and Explain to review the result.</li>
-                  </ul>
-                </div>
                 <div class="action-command-row" data-testid="action-command-row">
                 <div class="action-group action-group-primary" data-action-group="navigation" data-testid="action-group-navigation">
                   <button id="prev-step" type="button" class="button secondary" data-testid="prev-step">Back</button>
@@ -641,6 +633,15 @@
                 </details>
               </div>
             </div>
+
+          <div id="guided-checklist" class="guided-checklist" data-testid="guided-checklist" aria-live="polite">
+            <strong>Guided checklist</strong>
+            <ul>
+              <li>Choose a start path to focus the calculator.</li>
+              <li>Complete Profile and Income before computing.</li>
+              <li>Use Compare regimes and Explain to review the result.</li>
+            </ul>
+          </div>
 
           <section class="summary-rail" aria-labelledby="summary-heading" data-testid="sticky-summary">
             <span id="summary-confidence" class="badge success" data-testid="summary-confidence">Calculation confidence: high</span>

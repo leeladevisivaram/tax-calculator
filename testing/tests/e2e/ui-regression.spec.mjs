@@ -221,6 +221,8 @@ test.describe("Feature: UI regression - import, report, privacy, ops, and launch
       await expect(page.getByTestId("import-output")).toContainText("Import preview");
       await page.getByTestId("import-confirmed").check();
       await clickAction(page, "apply-import-button");
+      await expect(page.getByTestId("draft-status")).toContainText("Import applied after confirmation");
+      await expect(page.getByTestId("gross-salary")).toHaveValue("900000");
 
       await runCompute(page);
       await expect(page.getByTestId("result-output")).toContainText("₹9,00,000");
